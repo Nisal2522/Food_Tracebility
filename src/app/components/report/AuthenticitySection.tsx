@@ -20,7 +20,7 @@ export function AuthenticitySection() {
           </motion.div>
 
           <p className="mt-5 text-lg font-bold text-emerald-600" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-            Blockchain Verified
+            Verified
           </p>
           <p className="mx-auto mt-1 max-w-xs text-sm text-gray-500">{AUTHENTICITY.message}</p>
 

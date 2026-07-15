@@ -67,7 +67,7 @@ export function LandingScreen({ onScan }: { onScan: () => void }) {
         className="mt-8 flex items-center gap-5 text-xs text-gray-400"
       >
         <span className="flex items-center gap-1.5">
-          <ShieldCheck className="h-3.5 w-3.5 shrink-0 text-emerald-500" /> Blockchain Verified
+          <ShieldCheck className="h-3.5 w-3.5 shrink-0 text-emerald-500" /> Verified
         </span>
         <span className="flex items-center gap-1.5">
           <Sparkles className="h-3.5 w-3.5 text-emerald-500" /> 100% Transparent

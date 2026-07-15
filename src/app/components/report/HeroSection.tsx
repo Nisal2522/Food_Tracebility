@@ -27,7 +27,7 @@ export function HeroSection() {
           className="absolute left-5 top-6 flex items-center gap-1.5 rounded-full border border-white/60 bg-white/90 px-3 py-1.5 shadow-sm backdrop-blur-md"
         >
           <CheckCircle2 className="h-4 w-4 text-emerald-600" />
-          <span className="text-xs font-semibold text-emerald-700">Blockchain Verified</span>
+          <span className="text-xs font-semibold text-emerald-700">Verified</span>
         </motion.div>
 
         <motion.div
