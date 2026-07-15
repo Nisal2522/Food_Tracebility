@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
-import { Flag, AlertTriangle, Headset, X, MessageSquareWarning } from "lucide-react";
+import { Flag, AlertTriangle, Headset, X, MessageSquareWarning, CheckCircle2 } from "lucide-react";
 
 type FieldConfig = {
   key: string;
@@ -80,15 +80,19 @@ export function ReportFAB() {
   const [open, setOpen] = useState(false);
   const [activeAction, setActiveAction] = useState<ActionConfig | null>(null);
   const [formValues, setFormValues] = useState<Record<string, string>>({});
-  const [sent, setSent] = useState<string | null>(null);
+  const [submittedAction, setSubmittedAction] = useState<ActionConfig | null>(null);
 
   const openForm = (action: ActionConfig) => {
     setOpen(false);
     setFormValues({});
+    setSubmittedAction(null);
     setActiveAction(action);
   };
 
-  const closeForm = () => setActiveAction(null);
+  const closeForm = () => {
+    setActiveAction(null);
+    setSubmittedAction(null);
+  };
 
   const canSubmit =
     !!activeAction &&
@@ -98,10 +102,8 @@ export function ReportFAB() {
 
   const handleSubmit = () => {
     if (!activeAction || !canSubmit) return;
-    setSent(activeAction.label);
-    setActiveAction(null);
+    setSubmittedAction(activeAction);
     setFormValues({});
-    setTimeout(() => setSent(null), 2800);
   };
 
   return (
@@ -155,89 +157,115 @@ export function ReportFAB() {
               onClick={(e) => e.stopPropagation()}
               className="w-full max-w-sm rounded-[20px] border border-white/60 bg-white p-5 shadow-2xl"
             >
-              <div className="flex items-start justify-between gap-3">
-                <div className="flex items-center gap-2.5">
-                  <span className={`flex h-9 w-9 items-center justify-center rounded-full ${activeAction.color}`}>
-                    <activeAction.icon className="h-4 w-4 text-white" />
-                  </span>
-                  <h3 className="text-base font-bold text-gray-900" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-                    {activeAction.label}
-                  </h3>
-                </div>
-                <button
-                  type="button"
-                  onClick={closeForm}
-                  aria-label="Close"
-                  className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-gray-400 hover:bg-gray-100 hover:text-gray-600"
-                >
-                  <X className="h-4 w-4" />
-                </button>
-              </div>
-
-              <form
-                className="mt-4 space-y-3"
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  handleSubmit();
-                }}
-              >
-                {activeAction.fields.map((field) => (
-                  <label key={field.key} className="block">
-                    <span className="mb-1 block text-xs font-medium text-gray-600">
-                      {field.label}
-                      {field.required && <span className="text-red-500"> *</span>}
-                    </span>
-                    {field.type === "textarea" ? (
-                      <textarea
-                        value={formValues[field.key] ?? ""}
-                        onChange={(e) => setFormValues((v) => ({ ...v, [field.key]: e.target.value }))}
-                        placeholder={field.placeholder}
-                        rows={3}
-                        className="w-full resize-none rounded-xl border border-gray-200 bg-gray-50/80 px-3 py-2 text-sm text-gray-900 outline-none placeholder:text-gray-400 focus:border-emerald-400 focus:bg-white focus:ring-2 focus:ring-emerald-100"
-                      />
-                    ) : (
-                      <input
-                        type="text"
-                        value={formValues[field.key] ?? ""}
-                        onChange={(e) => setFormValues((v) => ({ ...v, [field.key]: e.target.value }))}
-                        placeholder={field.placeholder}
-                        className="w-full rounded-xl border border-gray-200 bg-gray-50/80 px-3 py-2 text-sm text-gray-900 outline-none placeholder:text-gray-400 focus:border-emerald-400 focus:bg-white focus:ring-2 focus:ring-emerald-100"
-                      />
-                    )}
-                  </label>
-                ))}
-
-                <div className="flex gap-2 pt-1">
-                  <button
-                    type="button"
-                    onClick={closeForm}
-                    className="flex-1 rounded-full border border-gray-200 py-2.5 text-sm font-semibold text-gray-600 hover:bg-gray-50"
+              <AnimatePresence mode="wait">
+                {submittedAction ? (
+                  <motion.div
+                    key="success"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="flex flex-col items-center py-4 text-center"
                   >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    disabled={!canSubmit}
-                    className="flex-1 rounded-full bg-gradient-to-br from-emerald-500 to-green-600 py-2.5 text-sm font-semibold text-white shadow-md shadow-emerald-200 transition-opacity disabled:cursor-not-allowed disabled:opacity-40"
-                  >
-                    Submit
-                  </button>
-                </div>
-              </form>
+                    <motion.div
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      transition={{ type: "spring", stiffness: 260, damping: 16, delay: 0.05 }}
+                      className="flex h-14 w-14 items-center justify-center rounded-full bg-emerald-100"
+                    >
+                      <CheckCircle2 className="h-8 w-8 text-emerald-600" />
+                    </motion.div>
+                    <h3
+                      className="mt-4 text-base font-bold text-gray-900"
+                      style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+                    >
+                      Submitted successfully
+                    </h3>
+                    <p className="mt-1.5 text-sm text-gray-500">
+                      Your {submittedAction.label.toLowerCase()} request has been received — our team will follow up shortly.
+                    </p>
+                    <button
+                      type="button"
+                      onClick={closeForm}
+                      className="mt-5 w-full rounded-full bg-gradient-to-br from-emerald-500 to-green-600 py-2.5 text-sm font-semibold text-white shadow-md shadow-emerald-200"
+                    >
+                      Done
+                    </button>
+                  </motion.div>
+                ) : (
+                  <motion.div key="form" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex items-center gap-2.5">
+                        <span className={`flex h-9 w-9 items-center justify-center rounded-full ${activeAction.color}`}>
+                          <activeAction.icon className="h-4 w-4 text-white" />
+                        </span>
+                        <h3 className="text-base font-bold text-gray-900" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+                          {activeAction.label}
+                        </h3>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={closeForm}
+                        aria-label="Close"
+                        className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+                      >
+                        <X className="h-4 w-4" />
+                      </button>
+                    </div>
+
+                    <form
+                      className="mt-4 space-y-3"
+                      onSubmit={(e) => {
+                        e.preventDefault();
+                        handleSubmit();
+                      }}
+                    >
+                      {activeAction.fields.map((field) => (
+                        <label key={field.key} className="block">
+                          <span className="mb-1 block text-xs font-medium text-gray-600">
+                            {field.label}
+                            {field.required && <span className="text-red-500"> *</span>}
+                          </span>
+                          {field.type === "textarea" ? (
+                            <textarea
+                              value={formValues[field.key] ?? ""}
+                              onChange={(e) => setFormValues((v) => ({ ...v, [field.key]: e.target.value }))}
+                              placeholder={field.placeholder}
+                              rows={3}
+                              className="w-full resize-none rounded-xl border border-gray-200 bg-gray-50/80 px-3 py-2 text-sm text-gray-900 outline-none placeholder:text-gray-400 focus:border-emerald-400 focus:bg-white focus:ring-2 focus:ring-emerald-100"
+                            />
+                          ) : (
+                            <input
+                              type="text"
+                              value={formValues[field.key] ?? ""}
+                              onChange={(e) => setFormValues((v) => ({ ...v, [field.key]: e.target.value }))}
+                              placeholder={field.placeholder}
+                              className="w-full rounded-xl border border-gray-200 bg-gray-50/80 px-3 py-2 text-sm text-gray-900 outline-none placeholder:text-gray-400 focus:border-emerald-400 focus:bg-white focus:ring-2 focus:ring-emerald-100"
+                            />
+                          )}
+                        </label>
+                      ))}
+
+                      <div className="flex gap-2 pt-1">
+                        <button
+                          type="button"
+                          onClick={closeForm}
+                          className="flex-1 rounded-full border border-gray-200 py-2.5 text-sm font-semibold text-gray-600 hover:bg-gray-50"
+                        >
+                          Cancel
+                        </button>
+                        <button
+                          type="submit"
+                          disabled={!canSubmit}
+                          className="flex-1 rounded-full bg-gradient-to-br from-emerald-500 to-green-600 py-2.5 text-sm font-semibold text-white shadow-md shadow-emerald-200 transition-opacity disabled:cursor-not-allowed disabled:opacity-40"
+                        >
+                          Submit
+                        </button>
+                      </div>
+                    </form>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      <AnimatePresence>
-        {sent && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 20 }}
-            className="fixed bottom-24 left-1/2 z-50 -translate-x-1/2 whitespace-nowrap rounded-full bg-gray-900 px-4 py-2.5 text-sm text-white shadow-xl"
-          >
-            {sent} submitted — our team will follow up shortly.
           </motion.div>
         )}
       </AnimatePresence>
