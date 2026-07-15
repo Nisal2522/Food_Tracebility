@@ -83,7 +83,7 @@ export const JOURNEY: JourneyStage[] = [
     organization: "ABC Food Processing Center",
     person: "Dilshan Fernando",
     image:
-      "https://images.unsplash.com/photo-1669207334420-66d0e3450283?w=600&h=400&fit=crop&auto=format",
+      "https://images.unsplash.com/photo-1652211955971-7517ff03529d?w=600&h=400&fit=crop&auto=format",
     status: "Completed",
     temperature: "22°C",
     details:
@@ -101,7 +101,7 @@ export const JOURNEY: JourneyStage[] = [
     organization: "ABC Food Processing Center",
     person: "Dilshan Fernando",
     image:
-      "https://images.unsplash.com/photo-1519096845289-95806ee03a1a?w=600&h=400&fit=crop&auto=format",
+      "https://images.unsplash.com/photo-1651525669944-00de65d3b8a5?w=600&h=400&fit=crop&auto=format",
     status: "Completed",
     temperature: "20°C",
     details:
@@ -157,7 +157,7 @@ export const JOURNEY: JourneyStage[] = [
     image:
       "https://images.unsplash.com/photo-1544531480-9eadeb3c8f41?w=600&h=400&fit=crop&auto=format",
     status: "Current",
-    temperature: "–",
+    temperature: "4°C",
     details:
       "QR code scanned just now. Full farm-to-shelf traceability confirmed and blockchain verification complete — this product is authentic and untampered.",
   },
@@ -390,7 +390,7 @@ export const MEDIA_GALLERY: MediaCategory[] = [
     label: "Factory",
     icon: "🏭",
     images: [
-      { src: "https://images.unsplash.com/photo-1669207334420-66d0e3450283?w=700&h=500&fit=crop&auto=format", caption: "Washing, grading and inspection line" },
+      { src: "https://images.unsplash.com/photo-1652211955971-7517ff03529d?w=700&h=500&fit=crop&auto=format", caption: "Washing, grading and inspection line" },
       { src: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=700&h=500&fit=crop&auto=format", caption: "Dilshan Fernando, processing supervisor" },
     ],
   },
@@ -399,7 +399,7 @@ export const MEDIA_GALLERY: MediaCategory[] = [
     label: "Packaging",
     icon: "📦",
     images: [
-      { src: "https://images.unsplash.com/photo-1519096845289-95806ee03a1a?w=700&h=500&fit=crop&auto=format", caption: "Vacuum sealing in biodegradable trays" },
+      { src: "https://images.unsplash.com/photo-1651525669944-00de65d3b8a5?w=700&h=500&fit=crop&auto=format", caption: "Vacuum sealing in biodegradable trays" },
     ],
   },
   {
@@ -416,7 +416,7 @@ export const MEDIA_GALLERY: MediaCategory[] = [
     label: "Warehouse",
     icon: "🏬",
     images: [
-      { src: "https://images.unsplash.com/photo-1519096845289-95806ee03a1a?w=700&h=500&fit=crop&auto=format", caption: "Cold storage staging at Peradeniya warehouse" },
+      { src: "https://images.unsplash.com/photo-1651525670033-279c26cc2347?w=700&h=500&fit=crop&auto=format", caption: "Cold storage staging at Peradeniya warehouse" },
     ],
   },
   {
