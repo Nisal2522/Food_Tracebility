@@ -24,10 +24,10 @@ export function HeroSection() {
           initial={{ opacity: 0, y: -12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.15, duration: 0.5 }}
-          className="absolute left-5 top-6 flex items-center gap-1.5 rounded-full border border-white/30 bg-white/20 px-3 py-1.5 backdrop-blur-md"
+          className="absolute left-5 top-6 flex items-center gap-1.5 rounded-full border-2 border-emerald-400 bg-white/90 px-3 py-1.5 shadow-sm backdrop-blur-md"
         >
-          <CheckCircle2 className="h-4 w-4 text-emerald-300" />
-          <span className="text-xs font-semibold text-white">Blockchain Verified</span>
+          <CheckCircle2 className="h-4 w-4 text-emerald-600" />
+          <span className="text-xs font-semibold text-emerald-700">Verified</span>
         </motion.div>
 
         <motion.div
@@ -49,27 +49,49 @@ export function HeroSection() {
           view === "mobile" ? "max-w-2xl" : "max-w-7xl px-5 sm:px-10 lg:px-16"
         )}
       >
-        <GlassCard className="p-6">
+        <GlassCard className={cn("p-6", view === "desktop" && "p-8")}>
           <div className="flex flex-wrap items-center gap-2">
-            <span className="rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-700">
+            <span
+              className={cn(
+                "rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-700",
+                view === "desktop" && "px-3 py-1.5 text-sm"
+              )}
+            >
               {PRODUCT.category}
             </span>
-            <span className="rounded-full bg-gray-50 px-2.5 py-1 text-xs font-mono text-gray-500">
+            <span
+              className={cn(
+                "rounded-full bg-gray-50 px-2.5 py-1 text-xs font-mono text-gray-500",
+                view === "desktop" && "px-3 py-1.5 text-sm"
+              )}
+            >
               {PRODUCT.batchId}
             </span>
           </div>
 
           <h1
-            className="mt-3 text-3xl font-bold leading-tight text-gray-900"
+            className={cn(
+              "mt-3 text-3xl font-bold leading-tight text-gray-900",
+              view === "desktop" && "text-5xl"
+            )}
             style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
           >
             {PRODUCT.name}
           </h1>
-          <p className="mt-1 text-sm text-gray-500">{PRODUCT.variety} · {PRODUCT.origin}</p>
+          <p className={cn("mt-1 text-sm text-gray-500", view === "desktop" && "text-lg")}>
+            {PRODUCT.variety} · {PRODUCT.origin}
+          </p>
 
-          <p className="mt-4 text-sm leading-relaxed text-gray-600">{PRODUCT.description}</p>
+          <p
+            className={cn(
+              "mt-4 text-sm leading-relaxed text-gray-600",
+              view === "desktop" && "text-base"
+            )}
+          >
+            {PRODUCT.description}
+          </p>
 
-          <div className={cn("mt-5 grid grid-cols-2 gap-3", view === "desktop" && "sm:grid-cols-4")}>
+          <div className={cn("mt-5 grid grid-cols-2 gap-3", view === "desktop" && "sm:grid-cols-4 mt-8 gap-4")}>
             <InfoTile icon={<CheckCircle2 className="h-4 w-4 text-emerald-500" />} label="Status" value={PRODUCT.status} />
             <InfoTile
               icon={<Leaf className="h-4 w-4 text-emerald-500" />}
@@ -150,13 +172,15 @@ function InfoTile({
   value: string;
   accent?: boolean;
 }) {
+  const { view } = useDeviceView();
+  const isDesktop = view === "desktop";
   return (
-    <div className={`rounded-2xl p-3 ${accent ? "bg-emerald-50" : "bg-gray-50/80"}`}>
+    <div className={cn("rounded-2xl p-3", isDesktop && "p-4", accent ? "bg-emerald-50" : "bg-gray-50/80")}>
       <div className="flex items-center gap-1.5">
         {icon}
-        <span className="text-[11px] text-gray-400">{label}</span>
+        <span className={cn("text-[11px] text-gray-400", isDesktop && "text-xs")}>{label}</span>
       </div>
-      <p className="mt-1 truncate text-sm font-semibold text-gray-900">{value}</p>
+      <p className={cn("mt-1 truncate text-sm font-semibold text-gray-900", isDesktop && "text-lg")}>{value}</p>
     </div>
   );
 }
