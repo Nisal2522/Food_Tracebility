@@ -22,7 +22,7 @@ export default function App() {
 }
 
 function AppFlow() {
-  const [stage, setStage] = useState<Stage>("landing");
+  const [stage, setStage] = useState<Stage>("report");
   const { view } = useDeviceView();
 
   const content = (
