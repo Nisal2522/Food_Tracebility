@@ -83,7 +83,7 @@ export const JOURNEY: JourneyStage[] = [
     organization: "ABC Food Processing Center",
     person: "Dilshan Fernando",
     image:
-      "https://images.unsplash.com/photo-1652211955971-7517ff03529d?w=600&h=400&fit=crop&auto=format",
+      "https://images.unsplash.com/photo-1669207334420-66d0e3450283?w=600&h=400&fit=crop&auto=format",
     status: "Completed",
     temperature: "22°C",
     details:
@@ -101,7 +101,7 @@ export const JOURNEY: JourneyStage[] = [
     organization: "ABC Food Processing Center",
     person: "Dilshan Fernando",
     image:
-      "https://images.unsplash.com/photo-1651525669944-00de65d3b8a5?w=600&h=400&fit=crop&auto=format",
+      "https://images.unsplash.com/photo-1519096845289-95806ee03a1a?w=600&h=400&fit=crop&auto=format",
     status: "Completed",
     temperature: "20°C",
     details:
@@ -137,7 +137,7 @@ export const JOURNEY: JourneyStage[] = [
     organization: "Cargills Food City",
     person: "Pradeep Silva",
     image:
-      "https://images.unsplash.com/photo-1770291326691-c19455e2263e?w=600&h=400&fit=crop&auto=format",
+      "https://images.unsplash.com/photo-1771019992524-9d83e1bf69bb?w=600&h=400&fit=crop&auto=format",
     status: "Completed",
     temperature: "4°C",
     details:
@@ -390,7 +390,7 @@ export const MEDIA_GALLERY: MediaCategory[] = [
     label: "Factory",
     icon: "🏭",
     images: [
-      { src: "https://images.unsplash.com/photo-1652211955971-7517ff03529d?w=700&h=500&fit=crop&auto=format", caption: "Washing, grading and inspection line" },
+      { src: "https://images.unsplash.com/photo-1669207334420-66d0e3450283?w=700&h=500&fit=crop&auto=format", caption: "Washing, grading and inspection line" },
       { src: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=700&h=500&fit=crop&auto=format", caption: "Dilshan Fernando, processing supervisor" },
     ],
   },
@@ -399,7 +399,7 @@ export const MEDIA_GALLERY: MediaCategory[] = [
     label: "Packaging",
     icon: "📦",
     images: [
-      { src: "https://images.unsplash.com/photo-1651525669944-00de65d3b8a5?w=700&h=500&fit=crop&auto=format", caption: "Vacuum sealing in biodegradable trays" },
+      { src: "https://images.unsplash.com/photo-1519096845289-95806ee03a1a?w=700&h=500&fit=crop&auto=format", caption: "Vacuum sealing in biodegradable trays" },
     ],
   },
   {
@@ -424,7 +424,7 @@ export const MEDIA_GALLERY: MediaCategory[] = [
     label: "Cargills Food City Shelf Display",
     icon: "🏪",
     images: [
-      { src: "https://images.unsplash.com/photo-1770291326691-c19455e2263e?w=700&h=500&fit=crop&auto=format", caption: "Shelf-stocked and ready for sale" },
+      { src: "https://images.unsplash.com/photo-1771019992524-9d83e1bf69bb?w=700&h=500&fit=crop&auto=format", caption: "Shelf-stocked and ready for sale" },
       { src: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=700&h=500&fit=crop&auto=format", caption: "Pradeep Silva, store manager" },
     ],
   },

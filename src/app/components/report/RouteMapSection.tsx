@@ -63,6 +63,12 @@ export function RouteMapSection() {
                 style={{ backgroundColor: point.color }}
               >
                 {point.icon}
+                <span
+                  className="absolute -top-1.5 -left-1.5 flex h-5 w-5 items-center justify-center rounded-full border-2 border-white bg-gray-900 text-[10px] font-bold text-white shadow-sm"
+                  aria-label={`Stop ${i + 1}`}
+                >
+                  {i + 1}
+                </span>
               </div>
               <div className="absolute bottom-full left-1/2 mb-2 -translate-x-1/2 whitespace-nowrap rounded-xl border border-gray-100 bg-white px-3 py-1.5 opacity-0 shadow-lg transition-opacity group-hover:opacity-100">
                 <p className="text-xs font-bold text-gray-900">{point.label}</p>
