@@ -26,15 +26,6 @@ export const PRODUCT = {
     "https://images.unsplash.com/photo-1553279768-865429fa0078?w=200&h=200&fit=crop&auto=format",
 };
 
-export const AUTHENTICITY = {
-  verified: true,
-  score: 100,
-  message: "No tampering detected.",
-  verifiedAt: "14 Jul 2026, 11:32 AM",
-  method: "Blockchain cryptographic signature + QR checksum",
-  scansToDate: 1,
-};
-
 export type JourneyStage = {
   id: number;
   icon: string;

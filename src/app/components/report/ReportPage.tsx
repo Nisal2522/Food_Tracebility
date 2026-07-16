@@ -3,7 +3,6 @@ import { ScanLine } from "lucide-react";
 import { useDeviceView } from "../../context/device-view";
 import { cn } from "../ui/utils";
 import { HeroSection } from "./HeroSection";
-import { AuthenticitySection } from "./AuthenticitySection";
 import { JourneyTimelineSection } from "./JourneyTimelineSection";
 import { RouteMapSection } from "./RouteMapSection";
 import { QualitySection } from "./QualitySection";
@@ -21,7 +20,6 @@ export function ReportPage({ onScanAnother }: { onScanAnother: () => void }) {
       <OrganicBackdrop />
 
       <HeroSection />
-      <AuthenticitySection />
       <JourneyTimelineSection />
       <RouteMapSection />
       <QualitySection />
