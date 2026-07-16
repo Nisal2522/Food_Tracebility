@@ -8,7 +8,6 @@ import { RouteMapSection } from "./RouteMapSection";
 import { QualitySection } from "./QualitySection";
 import { ParticipantsSection } from "./ParticipantsSection";
 import { CertificationsSection } from "./CertificationsSection";
-import { SustainabilitySection } from "./SustainabilitySection";
 import { MediaGallerySection } from "./MediaGallerySection";
 import { ReportFAB } from "./ReportFAB";
 import { OrganicBackdrop } from "./shared";
@@ -25,7 +24,6 @@ export function ReportPage({ onScanAnother }: { onScanAnother: () => void }) {
       <QualitySection />
       <ParticipantsSection />
       <CertificationsSection />
-      <SustainabilitySection />
       <MediaGallerySection />
 
       <div className={cn("mx-auto w-full px-5 pb-28 pt-4 text-center", view === "mobile" ? "max-w-2xl" : "max-w-7xl")}>

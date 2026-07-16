@@ -330,24 +330,6 @@ export const CERTIFICATIONS: Certification[] = [
   },
 ];
 
-export type SustainabilityMetric = {
-  id: string;
-  label: string;
-  icon: string;
-  value: number;
-  max: number;
-  unit: string;
-  color: string;
-};
-
-export const SUSTAINABILITY: SustainabilityMetric[] = [
-  { id: "carbon", label: "Carbon Footprint", icon: "🌱", value: 0.42, max: 1, unit: " kg CO₂e", color: "#22c55e" },
-  { id: "distance", label: "Distance Travelled", icon: "🛣️", value: 109, max: 200, unit: " km", color: "#3b82f6" },
-  { id: "water", label: "Water Usage", icon: "💧", value: 62, max: 150, unit: " L/kg", color: "#0ea5e9" },
-  { id: "farmers", label: "Local Farmers Supported", icon: "🤝", value: 24, max: 50, unit: "", color: "#f59e0b" },
-  { id: "renewable", label: "Renewable Energy Usage", icon: "⚡", value: 68, max: 100, unit: "%", color: "#8b5cf6" },
-];
-
 export type MediaCategory = {
   id: string;
   label: string;
