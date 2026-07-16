@@ -1,15 +1,30 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { CheckCircle2, Calendar, Leaf, ChevronDown } from "lucide-react";
+import { CheckCircle2, Calendar, Factory, Weight, Globe, ChevronDown } from "lucide-react";
 import { PRODUCT } from "../../data/traceability";
 import { useDeviceView } from "../../context/device-view";
 import { cn } from "../ui/utils";
 import { GlassCard } from "./shared";
 import { SriLankaFlag } from "./SriLankaFlag";
 
+const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+function parseDisplayDate(value: string): Date {
+  const [day, month, year] = value.split(" ");
+  return new Date(Number(year), MONTHS.indexOf(month), Number(day));
+}
+
+function daysBetween(startStr: string, endStr: string): number {
+  const start = parseDisplayDate(startStr);
+  const end = parseDisplayDate(endStr);
+  const diffDays = Math.round((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
+  return Math.max(0, diffDays);
+}
+
 export function HeroSection() {
   const { view } = useDeviceView();
   const [detailsExpanded, setDetailsExpanded] = useState(false);
+  const daysRemaining = daysBetween(PRODUCT.harvestDate, PRODUCT.expiryDate);
   return (
     <section className="relative">
       <div className="relative mx-4 h-[62vh] min-h-[420px] overflow-hidden rounded-[28px] sm:mx-0 sm:rounded-t-none sm:rounded-b-[32px]">
@@ -70,18 +85,18 @@ export function HeroSection() {
           <p className="mt-4 text-sm leading-relaxed text-gray-600">{PRODUCT.description}</p>
 
           <div className={cn("mt-5 grid grid-cols-2 gap-3", view === "desktop" && "sm:grid-cols-4")}>
-            <InfoTile icon={<CheckCircle2 className="h-4 w-4 text-emerald-500" />} label="Status" value={PRODUCT.status} />
+            <InfoTile icon={<Factory className="h-4 w-4 text-emerald-500" />} label="Manufacturing" value={PRODUCT.harvestDate} />
             <InfoTile
-              icon={<Leaf className="h-4 w-4 text-emerald-500" />}
-              label="Freshness"
-              value={`${PRODUCT.freshness}%`}
+              icon={<Calendar className="h-4 w-4 text-emerald-500" />}
+              label="Best Before"
+              value={PRODUCT.expiryDate}
               accent
             />
 
             {view === "desktop" && (
               <>
-                <InfoTile icon={<Calendar className="h-4 w-4 text-emerald-500" />} label="Harvested" value={PRODUCT.harvestDate} />
-                <InfoTile icon={<Calendar className="h-4 w-4 text-emerald-500" />} label="Best Before" value={PRODUCT.expiryDate} />
+                <InfoTile icon={<Weight className="h-4 w-4 text-emerald-500" />} label="Net Weight" value={PRODUCT.weight} />
+                <InfoTile icon={<Globe className="h-4 w-4 text-emerald-500" />} label="Country of Origin" value={PRODUCT.countryName} />
               </>
             )}
           </div>
@@ -98,8 +113,8 @@ export function HeroSection() {
                     className="overflow-hidden"
                   >
                     <div className="mt-3 grid grid-cols-2 gap-3">
-                      <InfoTile icon={<Calendar className="h-4 w-4 text-emerald-500" />} label="Harvested" value={PRODUCT.harvestDate} />
-                      <InfoTile icon={<Calendar className="h-4 w-4 text-emerald-500" />} label="Best Before" value={PRODUCT.expiryDate} />
+                      <InfoTile icon={<Weight className="h-4 w-4 text-emerald-500" />} label="Net Weight" value={PRODUCT.weight} />
+                      <InfoTile icon={<Globe className="h-4 w-4 text-emerald-500" />} label="Country of Origin" value={PRODUCT.countryName} />
                     </div>
                   </motion.div>
                 )}
@@ -122,7 +137,7 @@ export function HeroSection() {
           <div className="mt-4">
             <div className="mb-1 flex items-center justify-between text-xs">
               <span className="font-medium text-gray-500">{PRODUCT.freshnessLabel}</span>
-              <span className="font-semibold text-emerald-600">{PRODUCT.daysRemaining} days remaining</span>
+              <span className="font-semibold text-emerald-600">{daysRemaining} days remaining</span>
             </div>
             <div className="h-2 w-full overflow-hidden rounded-full bg-emerald-50">
               <motion.div

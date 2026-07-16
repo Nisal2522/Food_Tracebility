@@ -14,9 +14,8 @@ export const PRODUCT = {
   status: "Available for Sale",
   freshness: 94,
   freshnessLabel: "Peak Freshness",
-  harvestDate: "12 Jul 2026",
+  harvestDate: "14 Jul 2026",
   expiryDate: "25 Jul 2026",
-  daysRemaining: 11,
   weight: "500g",
   description:
     "Hand-picked at peak ripeness from a certified-organic hillside orchard, then cold-chain delivered within 48 hours of harvest. Every mango in this batch is traced from blossom to shelf.",
