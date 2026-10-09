@@ -8,7 +8,7 @@ export function RouteMapSection() {
     <Section
       id="route"
       eyebrow="Where It's Sourced"
-      title="Farmer & Facility Locations"
+      title="Origin Locations"
       headerRight={
         <span className="shrink-0 rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-bold text-emerald-700">
           {FARMER_POINTS.length + FACILITY_POINT_IDS.length} points

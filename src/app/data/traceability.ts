@@ -28,7 +28,7 @@ export type CountryCode = "LK" | "GB";
 
 export type JourneyEntity = {
   name: string;
-  detail: string;
+  detail?: string;
   // Defaults to the stage's country when not set
   country?: CountryCode;
 };
@@ -48,8 +48,8 @@ export const JOURNEY: JourneyStage[] = [
     label: "Harvested",
     country: "LK",
     entities: [
-      { name: "500 Farmers", detail: "Smallholders, Kurunegala coconut belt" },
-      { name: "Ceylon Thambili Exports (Pvt) Ltd", detail: "Farmer network, Kurunegala" },
+      { name: "500 Farmers" },
+      { name: "Ceylon Thambili Exports (Pvt) Ltd" },
     ],
   },
   {
@@ -97,15 +97,20 @@ export type RouteNode = {
   lat: number;
   lng: number;
   color: string;
+  photo?: string;
 };
+
+// Sample photos shown when a facility pin is tapped
+const FACTORY_PHOTO = "https://images.pexels.com/photos/18631424/pexels-photo-18631424.jpeg?auto=compress&cs=tinysrgb&w=480&h=270&fit=crop";
+const WAREHOUSE_PHOTO = "https://images.pexels.com/photos/10697106/pexels-photo-10697106.jpeg?auto=compress&cs=tinysrgb&w=480&h=270&fit=crop";
 
 export const ROUTE_NODES: RouteNode[] = [
   { id: "farms", label: "Farms (500)", icon: "🌴", city: "Kurunegala", lat: 7.6236, lng: 80.2392, color: "#22c55e" },
   { id: "collection", label: "Collection Centre", icon: "🧺", city: "Kurunegala", lat: 7.4863, lng: 80.3647, color: "#84cc16" },
-  { id: "colombo-factory", label: "Colombo Factory", icon: "🏭", city: "Ja-Ela, Colombo", lat: 7.0744, lng: 79.8919, color: "#3b82f6" },
-  { id: "hambantota-factory", label: "Hambantota Factory", icon: "🏭", city: "Hambantota", lat: 6.1241, lng: 81.1185, color: "#3b82f6" },
-  { id: "colombo-wh", label: "Colombo WH", icon: "📦", city: "Colombo Port", lat: 6.9497, lng: 79.8428, color: "#8b5cf6" },
-  { id: "kandy-wh", label: "Kandy WH", icon: "📦", city: "Kandy", lat: 7.2906, lng: 80.6337, color: "#8b5cf6" },
+  { id: "colombo-factory", label: "Colombo Factory", icon: "🏭", city: "Ja-Ela, Colombo", lat: 7.0744, lng: 79.8919, color: "#3b82f6", photo: FACTORY_PHOTO },
+  { id: "hambantota-factory", label: "Hambantota Factory", icon: "🏭", city: "Hambantota", lat: 6.1241, lng: 81.1185, color: "#3b82f6", photo: FACTORY_PHOTO },
+  { id: "colombo-wh", label: "Colombo WH", icon: "📦", city: "Colombo Port", lat: 6.9497, lng: 79.8428, color: "#8b5cf6", photo: WAREHOUSE_PHOTO },
+  { id: "kandy-wh", label: "Kandy WH", icon: "📦", city: "Kandy", lat: 7.2906, lng: 80.6337, color: "#8b5cf6", photo: WAREHOUSE_PHOTO },
 ];
 
 export type SourceLot = {
@@ -145,6 +150,7 @@ export const ORIGIN_SUMMARY = {
   farmers: ORIGIN_AREAS.reduce((sum, a) => sum + a.farmers, 0),
   plots: ORIGIN_AREAS.reduce((sum, a) => sum + a.plots, 0),
   totalAreaHa: ORIGIN_AREAS.reduce((sum, a) => sum + a.areaHa, 0),
+  processingCenters: ROUTE_NODES.filter((node) => node.id.endsWith("-factory")).length,
 };
 
 // Approximate centre of each sourcing area, used to scatter farmer locations
@@ -154,7 +160,16 @@ const ORIGIN_AREA_CENTRES: Record<string, { lat: number; lng: number }> = {
   Mawathagama: { lat: 7.4319, lng: 80.443 },
 };
 
-export type FarmerPoint = { id: string; area: string; lat: number; lng: number };
+export type FarmerPoint = { id: string; area: string; lat: number; lng: number; photo: string };
+
+// Sample farmer photos, assigned in rotation so each farmer always shows the same one
+const FARMER_PHOTOS = [
+  "https://images.unsplash.com/photo-1642518939037-4652638c17a7",
+  "https://images.unsplash.com/photo-1721713478248-ded19734143d",
+  "https://images.unsplash.com/photo-1559886822-9c199bba9e7d",
+  "https://images.unsplash.com/photo-1570441396746-5a73ec022a97",
+  "https://images.unsplash.com/photo-1780359397833-b50a6ed288d8",
+].map((url) => `${url}?w=480&h=270&fit=crop&crop=faces,center&auto=format&q=70`);
 
 // Deterministic PRNG so the sample farmer locations are identical on every load
 function seededRandom(seed: number) {
@@ -181,6 +196,7 @@ export const FARMER_POINTS: FarmerPoint[] = (() => {
         area: area.name,
         lat: centre.lat + radius * Math.sin(angle),
         lng: centre.lng + radius * Math.cos(angle),
+        photo: FARMER_PHOTOS[points.length % FARMER_PHOTOS.length],
       });
     }
   });
@@ -299,10 +315,7 @@ export type Certification = {
   id: string;
   name: string;
   icon: string;
-  number: string;
   issuer: string;
-  validity: string;
-  status: "Verified" | "Pending" | "Expired";
 };
 
 export const CERTIFICATIONS: Certification[] = [
@@ -310,46 +323,31 @@ export const CERTIFICATIONS: Certification[] = [
     id: "globalgap",
     name: "GlobalG.A.P.",
     icon: "🌍",
-    number: "GGN 4049927812345",
     issuer: "GLOBALG.A.P. c/o FoodPLUS GmbH",
-    validity: "Valid until 30 Jun 2027",
-    status: "Verified",
   },
   {
     id: "iso22000",
     name: "ISO 22000",
     icon: "🛡️",
-    number: "ISO22K-LK-88214",
     issuer: "SGS Lanka (Pvt) Ltd",
-    validity: "Valid until 14 Mar 2027",
-    status: "Verified",
   },
   {
     id: "haccp",
     name: "HACCP",
     icon: "🧪",
-    number: "HACCP-2026-3392",
     issuer: "Bureau Veritas Sri Lanka",
-    validity: "Valid until 09 Nov 2027",
-    status: "Verified",
   },
   {
     id: "brcgs",
     name: "BRCGS",
     icon: "🏆",
-    number: "BRCGS-77410-SL",
     issuer: "BRCGS Global Standards",
-    validity: "Valid until 22 Jan 2027",
-    status: "Verified",
   },
   {
     id: "control-union",
-    name: "Control Union Certified",
+    name: "EU & UK Organic",
     icon: "✅",
-    number: "CU 844213-ORG",
     issuer: "Control Union Certifications",
-    validity: "Valid until 05 Aug 2027",
-    status: "Verified",
   },
 ];
 

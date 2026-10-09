@@ -6,8 +6,6 @@ import { cn } from "../ui/utils";
 import { embedUrl, fitCamera, offsetFromCentre } from "./mapProjection";
 import { CountryFlag } from "./CountryFlag";
 
-type MapView = "farmers" | "all";
-
 type Selection = {
   id: string;
   title: string;
@@ -15,13 +13,16 @@ type Selection = {
   lat: number;
   lng: number;
   color: string;
+  photo?: string;
 };
 
 const FACILITIES = ROUTE_NODES.filter((node) => FACILITY_POINT_IDS.includes(node.id));
 const FARMER_PIN_COLOR = "#16a34a";
 const FARMER_PIN_W = 16;
 const PIN_PATH = "M12 1C5.9 1 1 5.9 1 12c0 8.3 11 19 11 19s11-10.7 11-19C23 5.9 18.1 1 12 1z";
-const CARD_W = 220;
+const CARD_W = 240;
+// Approximate info card height with its photo, used to decide where it fits
+const CARD_H = 220;
 
 const formatCoords = (lat: number, lng: number) => `${lat.toFixed(4)}° N, ${lng.toFixed(4)}° E`;
 
@@ -30,7 +31,6 @@ const formatCoords = (lat: number, lng: number) => `${lat.toFixed(4)}° N, ${lng
 export function LocationsMap({ className = "" }: { className?: string }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [size, setSize] = useState<{ width: number; height: number } | null>(null);
-  const [view, setView] = useState<MapView>("farmers");
   const [selected, setSelected] = useState<Selection | null>(null);
   const pinSymbolId = `farmer-pin${useId().replace(/:/g, "")}`;
 
@@ -47,20 +47,15 @@ export function LocationsMap({ className = "" }: { className?: string }) {
 
   const camera = useMemo(() => {
     if (!size) return null;
-    const points = view === "farmers" ? FARMER_POINTS : [...FARMER_POINTS, ...FACILITIES];
-    return fitCamera(points, size.width, size.height);
-  }, [size, view]);
+    // Framed on the farms; facilities inside that area are shown too
+    return fitCamera(FARMER_POINTS, size.width, size.height);
+  }, [size]);
 
   // Screen position of a lat/lng inside the container
   const toScreen = (lat: number, lng: number) => {
     if (!camera || !size) return { x: 0, y: 0 };
     const { dx, dy } = offsetFromCentre(lat, lng, camera);
     return { x: size.width / 2 + dx, y: size.height / 2 + dy };
-  };
-
-  const changeView = (next: MapView) => {
-    setSelected(null);
-    setView(next);
   };
 
   const selectFarmer = (farmer: (typeof FARMER_POINTS)[number]) =>
@@ -71,6 +66,7 @@ export function LocationsMap({ className = "" }: { className?: string }) {
       lat: farmer.lat,
       lng: farmer.lng,
       color: FARMER_PIN_COLOR,
+      photo: farmer.photo,
     });
 
   const selectFacility = (facility: (typeof FACILITIES)[number]) =>
@@ -84,6 +80,7 @@ export function LocationsMap({ className = "" }: { className?: string }) {
       lat: facility.lat,
       lng: facility.lng,
       color: facility.color,
+      photo: facility.photo,
     });
 
   const selectedPos = selected ? toScreen(selected.lat, selected.lng) : null;
@@ -106,7 +103,7 @@ export function LocationsMap({ className = "" }: { className?: string }) {
           />
 
           <motion.div
-            key={`${view}-${camera.zoom}`}
+            key={camera.zoom}
             className="absolute inset-0"
             initial={{ opacity: 0, y: -8 }}
             animate={{ opacity: 1, y: 0 }}
@@ -180,9 +177,18 @@ export function LocationsMap({ className = "" }: { className?: string }) {
             exit={{ opacity: 0, y: 6, scale: 0.96 }}
             transition={{ duration: 0.18 }}
             onClick={(e) => e.stopPropagation()}
-            className="absolute z-20 rounded-2xl border border-gray-100 bg-white p-3 shadow-xl"
+            className="absolute z-20 overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-xl"
             style={cardPosition(selectedPos, size)}
           >
+            {selected.photo && (
+              <img
+                src={selected.photo}
+                alt={selected.title}
+                className="h-28 w-full bg-gray-100 object-cover"
+                decoding="async"
+              />
+            )}
+            <div className="p-3">
             <div className="flex items-start justify-between gap-2">
               <p className="flex items-center gap-1.5 text-sm font-bold text-gray-900">
                 <MapPin className="h-4 w-4 shrink-0" style={{ color: selected.color }} />
@@ -203,43 +209,21 @@ export function LocationsMap({ className = "" }: { className?: string }) {
                 {line}
               </p>
             ))}
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
-
-      <div className="absolute right-2 top-2 z-30 flex rounded-full bg-white/95 p-1 shadow-md" onClick={(e) => e.stopPropagation()}>
-        {(
-          [
-            ["farmers", "Farmers"],
-            ["all", "All sites"],
-          ] as const
-        ).map(([key, label]) => (
-          <button
-            key={key}
-            type="button"
-            onClick={() => changeView(key)}
-            aria-pressed={view === key}
-            className={cn(
-              "rounded-full px-3 py-1.5 text-xs font-semibold transition-colors",
-              view === key ? "bg-emerald-600 text-white" : "text-gray-600 hover:text-emerald-700"
-            )}
-          >
-            {label}
-          </button>
-        ))}
-      </div>
     </div>
   );
 }
 
-// Places the info card above the pin, flipping below it near the top edge and clamping to the sides
+// Places the info card above the pin if it fits, otherwise below, otherwise along the top edge; clamped to the sides
 function cardPosition(pos: { x: number; y: number }, size: { width: number; height: number }) {
   const width = Math.min(CARD_W, size.width - 16);
   const left = Math.min(Math.max(pos.x - width / 2, 8), size.width - width - 8);
-  const placeAbove = pos.y > 120;
-  return placeAbove
-    ? { width, left, bottom: size.height - pos.y + 32 }
-    : { width, left, top: pos.y + 8 };
+  if (pos.y - 32 >= CARD_H + 8) return { width, left, bottom: size.height - pos.y + 32 };
+  if (size.height - pos.y - 8 >= CARD_H) return { width, left, top: pos.y + 8 };
+  return { width, left, top: 8 };
 }
 
 // Classic map-pin with an optional emoji glyph, used for the facility markers

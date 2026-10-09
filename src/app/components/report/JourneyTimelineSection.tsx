@@ -74,7 +74,7 @@ export function JourneyTimelineSection() {
               </div>
 
               <motion.div
-                className="min-w-0 flex-1 pb-5"
+                className="min-w-0 flex-1 pb-3"
                 initial={{ opacity: 0, x: 32 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true, margin: "-40px" }}
@@ -105,10 +105,12 @@ export function JourneyTimelineSection() {
                                 className="ml-1.5 inline-block h-3 w-[18px] rounded-[2px] align-[-1px] shadow-sm"
                               />
                             </p>
-                            <p className="mt-0.5 flex items-start gap-1 text-[13px] leading-snug text-gray-600">
-                              <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-gray-400" />
-                              {entity.detail}
-                            </p>
+                            {entity.detail && (
+                              <p className="mt-0.5 flex items-start gap-1 text-[13px] leading-snug text-gray-600">
+                                <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-gray-400" />
+                                {entity.detail}
+                              </p>
+                            )}
                           </div>
                         </li>
                       ))}

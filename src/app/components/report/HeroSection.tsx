@@ -1,6 +1,6 @@
 import { useId, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { CheckCircle2, Calendar, Factory, Globe, ChevronDown, Hash, Droplets, Ship, Package, Anchor } from "lucide-react";
+import { Calendar, Factory, Globe, ChevronDown, Hash, Droplets, Ship, Package, Anchor } from "lucide-react";
 import { PRODUCT, COMPANY } from "../../data/traceability";
 import { useDeviceView } from "../../context/device-view";
 import { cn } from "../ui/utils";
@@ -38,16 +38,7 @@ export function HeroSection() {
             view === "mobile" ? "max-w-2xl" : "max-w-7xl sm:px-10 sm:pb-28 sm:pt-8 lg:px-16"
           )}
         >
-          <div className="flex items-center justify-between">
-            <motion.div
-              initial={{ opacity: 0, y: -12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.15, duration: 0.5 }}
-              className="flex items-center gap-1.5 rounded-full bg-white px-3 py-1.5 shadow-sm"
-            >
-              <CheckCircle2 className="h-4 w-4 text-emerald-600" />
-              <span className="text-xs font-semibold text-emerald-700">Verified</span>
-            </motion.div>
+          <div className="flex items-center justify-end">
             <motion.div
               initial={{ opacity: 0, y: -12 }}
               animate={{ opacity: 1, y: 0 }}

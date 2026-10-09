@@ -44,7 +44,7 @@ export function Section({
     <motion.section
       id={id}
       className={cn(
-        "relative mx-auto w-full px-4 py-8 sm:px-5 sm:py-10",
+        "relative mx-auto w-full px-4 sm:px-5",
         view === "mobile" ? "max-w-2xl" : "max-w-7xl px-4 sm:px-10 lg:px-16",
         className
       )}
@@ -53,7 +53,7 @@ export function Section({
       viewport={{ once: true, margin: "-80px" }}
       transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
     >
-      <div className="mb-5 flex items-end justify-between gap-3">
+      <div className="mb-3 flex items-end justify-between gap-3">
         <div>
           <p className="text-xs font-semibold uppercase tracking-widest text-emerald-600">{eyebrow}</p>
           <h2
