@@ -74,7 +74,7 @@ export function JourneyTimelineSection() {
               </div>
 
               <motion.div
-                className="min-w-0 flex-1 pb-3"
+                className={`min-w-0 flex-1 ${isLast ? "" : "pb-3"}`}
                 initial={{ opacity: 0, x: 32 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true, margin: "-40px" }}
