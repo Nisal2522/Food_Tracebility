@@ -28,13 +28,27 @@ export function HeroSection() {
   const [detailsExpanded, setDetailsExpanded] = useState(false);
   return (
     <section className="relative">
-      <div className="relative mx-4 h-[62vh] min-h-[420px] overflow-hidden rounded-[28px] sm:mx-0 sm:rounded-t-none sm:rounded-b-[32px]">
+      <div className="relative mx-4 mt-4 aspect-[4/5] overflow-hidden rounded-[28px] shadow-[0_20px_50px_rgba(16,64,32,0.18)] sm:mx-0 sm:mt-0 sm:aspect-auto sm:h-[62vh] sm:min-h-[420px] sm:rounded-t-none sm:rounded-b-[32px] sm:shadow-none">
+        {/* Wide screens: blurred copy fills the frame so the portrait photo can be shown whole */}
         <img
           src={PRODUCT.heroImage}
-          alt={PRODUCT.endProduct}
-          className="h-full w-full object-cover"
+          alt=""
+          aria-hidden
+          className="absolute inset-0 hidden h-full w-full scale-110 object-cover blur-2xl sm:block"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-black/0" />
+        <motion.div
+          initial={{ opacity: 0, scale: 1.08 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }}
+          className="absolute inset-0 sm:bottom-20 sm:top-8"
+        >
+          <img
+            src={PRODUCT.heroImage}
+            alt={PRODUCT.endProduct}
+            className="h-full w-full object-cover object-[center_40%] sm:mx-auto sm:w-auto sm:rounded-3xl sm:shadow-[0_30px_60px_rgba(0,0,0,0.35)] sm:ring-4 sm:ring-white/40"
+          />
+        </motion.div>
+        <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/0 to-black/10" />
 
         <motion.div
           initial={{ opacity: 0, y: -12 }}
@@ -61,8 +75,8 @@ export function HeroSection() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.25, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
         className={cn(
-          "relative z-10 mx-auto -mt-16 w-full px-5",
-          view === "mobile" ? "max-w-2xl" : "max-w-7xl px-5 sm:px-10 lg:px-16"
+          "relative z-10 mx-auto -mt-16 w-full px-4",
+          view === "mobile" ? "max-w-2xl" : "max-w-7xl px-4 sm:px-10 lg:px-16"
         )}
       >
         <GlassCard className="p-6">
@@ -139,9 +153,9 @@ function InfoTile({
     <div className={`rounded-2xl p-3 ${accent ? "bg-emerald-50" : "bg-gray-50/80"}`}>
       <div className="flex items-center gap-1.5">
         {icon}
-        <span className="text-[11px] text-gray-400">{label}</span>
+        <span className="text-xs font-medium text-gray-500">{label}</span>
       </div>
-      <p className="mt-1 truncate text-sm font-semibold text-gray-900">{value}</p>
+      <p className="mt-1 break-words text-sm font-semibold text-gray-900">{value}</p>
     </div>
   );
 }

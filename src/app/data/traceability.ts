@@ -11,8 +11,8 @@ export const PRODUCT = {
   manufacturingDate: "9 Oct 2026",
   bestBefore: "11 Nov 2026",
   shipmentDate: "8 Oct 2026",
-  consignmentNumber: "—",
-  countryOfLoading: "—",
+  consignmentNumber: "CMB-LDN-2026-0471",
+  countryOfLoading: "SRI LANKA",
   countryOfOrigin: "SRI LANKA",
   heroImage: productImage,
 };
@@ -31,8 +31,6 @@ export type JourneyStage = {
   date: string;
   country: CountryCode;
   entities: JourneyEntity[];
-  // Optional stages (e.g. buyer collection) may be skipped when farms deliver straight to the factory
-  optional?: boolean;
   image: string;
   status: "Completed" | "Current";
   temperature: string;
@@ -64,13 +62,12 @@ export const JOURNEY: JourneyStage[] = [
     date: "8 Oct 2026",
     country: "LK",
     entities: [{ name: "ABC (Pvt) Ltd Collection Centre", detail: "Kurunegala" }],
-    optional: true,
     image:
       "https://images.unsplash.com/photo-1743947063482-3a7f53a6e0d9?w=600&h=400&fit=crop&auto=format",
     status: "Completed",
     temperature: "24°C",
     details:
-      "Nuts from smaller farms were weighed, graded and consolidated before dispatch to the factories. This step is optional — larger farms deliver straight to the factory.",
+      "Nuts were weighed, graded and consolidated at the collection centre before dispatch to the factories.",
   },
   {
     id: 3,
@@ -130,24 +127,21 @@ export type RouteNode = {
   lat: number;
   lng: number;
   color: string;
-  optional?: boolean;
 };
 
 export const ROUTE_NODES: RouteNode[] = [
   { id: "farms", label: "Farms (500)", icon: "🌴", city: "Kurunegala", lat: 7.6236, lng: 80.2392, color: "#22c55e" },
-  { id: "collection", label: "Collection Centre", icon: "🧺", city: "Kurunegala", lat: 7.4863, lng: 80.3647, color: "#84cc16", optional: true },
+  { id: "collection", label: "Collection Centre", icon: "🧺", city: "Kurunegala", lat: 7.4863, lng: 80.3647, color: "#84cc16" },
   { id: "colombo-factory", label: "Colombo Factory", icon: "🏭", city: "Ja-Ela, Colombo", lat: 7.0744, lng: 79.8919, color: "#3b82f6" },
   { id: "hambantota-factory", label: "Hambantota Factory", icon: "🏭", city: "Hambantota", lat: 6.1241, lng: 81.1185, color: "#3b82f6" },
   { id: "colombo-wh", label: "Colombo WH", icon: "📦", city: "Colombo Port", lat: 6.9497, lng: 79.8428, color: "#8b5cf6" },
   { id: "kandy-wh", label: "Kandy WH", icon: "📦", city: "Kandy", lat: 7.2906, lng: 80.6337, color: "#8b5cf6" },
 ];
 
-export const ROUTE_EDGES: { from: string; to: string; optional?: boolean }[] = [
-  { from: "farms", to: "collection", optional: true },
-  { from: "collection", to: "colombo-factory", optional: true },
-  { from: "collection", to: "hambantota-factory", optional: true },
-  { from: "farms", to: "colombo-factory" },
-  { from: "farms", to: "hambantota-factory" },
+export const ROUTE_EDGES: { from: string; to: string }[] = [
+  { from: "farms", to: "collection" },
+  { from: "collection", to: "colombo-factory" },
+  { from: "collection", to: "hambantota-factory" },
   { from: "colombo-factory", to: "colombo-wh" },
   { from: "hambantota-factory", to: "kandy-wh" },
 ];
@@ -202,11 +196,6 @@ export const ORIGIN_SUMMARY = {
   farmers: ORIGIN_AREAS.reduce((sum, a) => sum + a.farmers, 0),
   plots: ORIGIN_AREAS.reduce((sum, a) => sum + a.plots, 0),
   totalAreaHa: ORIGIN_AREAS.reduce((sum, a) => sum + a.areaHa, 0),
-  checks: [
-    { label: "Plots geo-located", value: "612 / 612" },
-    { label: "Organic certified plots", value: "612 / 612" },
-    { label: "Deforestation-free since 2020", value: "Verified" },
-  ],
 };
 
 export type QualityTest = {

@@ -7,7 +7,6 @@ import {
   MAP_EMBED_URL,
   ROUTE_OVERVIEW_MAP_EMBED_URL,
 } from "../../data/traceability";
-import { cn } from "../ui/utils";
 import { GlassCard, Section } from "./shared";
 import { SriLankaFlag } from "./SriLankaFlag";
 import { CountryFlag } from "./CountryFlag";
@@ -73,10 +72,9 @@ export function RouteMapSection() {
                     y1={from.dy}
                     x2={to.dx}
                     y2={to.dy}
-                    stroke={edge.optional ? "#84cc16" : "#16a34a"}
+                    stroke="#16a34a"
                     strokeWidth={2.5}
                     strokeLinecap="round"
-                    strokeDasharray={edge.optional ? "4 5" : undefined}
                     initial={{ pathLength: 0, opacity: 0 }}
                     whileInView={{ pathLength: 1, opacity: 1 }}
                     viewport={{ once: true }}
@@ -98,20 +96,14 @@ export function RouteMapSection() {
               style={{ left: `calc(50% + ${node.dx}px)`, top: `calc(50% + ${node.dy}px)` }}
             >
               <div
-                className={cn(
-                  "relative flex h-8 w-8 items-center justify-center rounded-full border-2 border-white text-sm shadow-lg",
-                  node.optional && "border-dashed"
-                )}
+                className="relative flex h-8 w-8 items-center justify-center rounded-full border-2 border-white text-sm shadow-lg"
                 style={{ backgroundColor: node.color }}
               >
                 {node.icon}
               </div>
               <div className="absolute bottom-full left-1/2 z-10 mb-2 -translate-x-1/2 whitespace-nowrap rounded-xl border border-gray-100 bg-white px-3 py-1.5 opacity-0 shadow-lg transition-opacity group-hover:opacity-100">
-                <p className="text-xs font-bold text-gray-900">
-                  {node.label}
-                  {node.optional && <span className="ml-1 font-medium text-emerald-600">(optional)</span>}
-                </p>
-                <p className="flex items-center gap-1 text-xs text-gray-400">
+                <p className="text-xs font-bold text-gray-900">{node.label}</p>
+                <p className="flex items-center gap-1 text-xs text-gray-500">
                   <SriLankaFlag className="h-2.5 w-4 shrink-0 rounded-[1px]" /> {node.city}
                 </p>
               </div>
@@ -128,20 +120,17 @@ export function RouteMapSection() {
           {ROUTE_NODES.map((node) => (
             <div key={node.id} className="flex items-center gap-1.5">
               <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: node.color }} />
-              <span className="text-xs text-gray-600">
-                {node.label}
-                {node.optional && <span className="text-emerald-600"> · optional</span>}
-              </span>
+              <span className="text-[13px] text-gray-700">{node.label}</span>
             </div>
           ))}
           <div className="flex items-center gap-1.5">
             <CountryFlag country="GB" className="h-2.5 w-4 rounded-[1px]" />
-            <span className="text-xs font-semibold text-gray-700">Export → {CUSTOMER.country}</span>
+            <span className="text-[13px] font-semibold text-gray-800">Export → {CUSTOMER.country}</span>
           </div>
         </div>
 
         <div className="border-t border-gray-100 p-4">
-          <p className="mb-2 text-xs font-semibold text-gray-500">Customer Destination</p>
+          <p className="mb-2 text-sm font-semibold text-gray-700">Customer Destination</p>
           <div className="overflow-hidden rounded-2xl border border-gray-100">
             <iframe
               title="Customer location"

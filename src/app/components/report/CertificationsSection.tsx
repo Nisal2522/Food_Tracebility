@@ -33,7 +33,7 @@ export function CertificationsSection() {
                     <p className="text-sm font-bold text-gray-900" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
                       {cert.name}
                     </p>
-                    <p className="truncate text-xs text-gray-500">{cert.issuer}</p>
+                    <p className="truncate text-[13px] text-gray-600">{cert.issuer}</p>
                   </div>
                   <ChevronDown className={`h-4 w-4 shrink-0 text-gray-400 transition-transform ${open ? "rotate-180" : ""}`} />
                 </button>
@@ -53,7 +53,7 @@ export function CertificationsSection() {
                           <DetailRow label="Issuing Body" value={cert.issuer} />
                           <DetailRow label="Validity" value={cert.validity} />
                           <div className="flex items-center justify-between gap-2">
-                            <span className="text-xs text-gray-400">Verification Status</span>
+                            <span className="text-xs text-gray-500">Verification Status</span>
                             <span className="inline-flex items-center gap-1 rounded-full bg-emerald-100 px-2.5 py-1 text-xs font-semibold text-emerald-700">
                               <BadgeCheck className="h-3 w-3" /> {cert.status}
                             </span>
@@ -80,7 +80,7 @@ export function CertificationsSection() {
 function DetailRow({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex items-center justify-between gap-2">
-      <span className="text-xs text-gray-400">{label}</span>
+      <span className="text-xs text-gray-500">{label}</span>
       <span className="truncate text-xs font-semibold text-gray-800">{value}</span>
     </div>
   );
@@ -96,8 +96,8 @@ function CertificatePreview({ cert }: { cert: Certification }) {
       <p className="mt-2 text-base font-bold text-gray-900" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
         {cert.name}
       </p>
-      <p className="mt-0.5 font-mono text-[11px] text-gray-500">{cert.number}</p>
-      <div className="mx-auto mt-3 flex w-fit items-center gap-1 rounded-full bg-white/70 px-2.5 py-1 text-[11px] font-semibold text-emerald-700">
+      <p className="mt-0.5 font-mono text-xs text-gray-600">{cert.number}</p>
+      <div className="mx-auto mt-3 flex w-fit items-center gap-1 rounded-full bg-white/70 px-2.5 py-1 text-xs font-semibold text-emerald-700">
         <ShieldCheck className="h-3 w-3" /> {cert.status} · {cert.validity}
       </div>
     </div>

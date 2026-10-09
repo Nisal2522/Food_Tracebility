@@ -1,10 +1,10 @@
 import { useDeviceView } from "../../context/device-view";
 import { cn } from "../ui/utils";
 import { HeroSection } from "./HeroSection";
+import { SectionNav } from "./SectionNav";
 import { JourneyTimelineSection } from "./JourneyTimelineSection";
 import { RouteMapSection } from "./RouteMapSection";
 import { OriginSummarySection } from "./OriginSummarySection";
-import { SourceLotsSection } from "./SourceLotsSection";
 import { CertificationsSection } from "./CertificationsSection";
 import { ReportFAB } from "./ReportFAB";
 import { ReportFooter } from "./ReportFooter";
@@ -17,10 +17,10 @@ export function ReportPage() {
       <OrganicBackdrop />
 
       <HeroSection />
+      <SectionNav />
       <JourneyTimelineSection />
       <RouteMapSection />
       <OriginSummarySection />
-      <SourceLotsSection />
       <CertificationsSection />
 
       <ReportFooter />

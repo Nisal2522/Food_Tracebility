@@ -11,7 +11,7 @@ export function ReportFooter() {
     <footer className="border-t border-gray-200 bg-white pb-24 pt-6 lg:pb-6">
       <div
         className={cn(
-          "mx-auto flex w-full gap-4 px-5",
+          "mx-auto flex w-full gap-4 px-4",
           view === "mobile"
             ? "max-w-2xl flex-col"
             : "max-w-7xl flex-col sm:flex-row sm:items-center sm:justify-between sm:px-10 lg:px-16"
@@ -26,7 +26,7 @@ export function ReportFooter() {
             >
               Powered by TerraX
             </p>
-            <p className="text-sm text-gray-400">End-to-End Food Traceability</p>
+            <p className="text-sm text-gray-500">End-to-End Food Traceability</p>
           </div>
         </div>
 

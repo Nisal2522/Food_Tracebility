@@ -10,7 +10,7 @@ export function SourceLotsSection() {
       <GlassCard className="overflow-hidden">
         {/* Table on wider screens */}
         <table className="hidden w-full text-left text-sm sm:table">
-          <thead className="bg-gray-50/80 text-xs text-gray-400">
+          <thead className="bg-gray-50/80 text-xs text-gray-500">
             <tr>
               <th className="px-4 py-3 font-medium">Lot ID</th>
               <th className="px-4 py-3 font-medium">Processed</th>
@@ -48,13 +48,13 @@ export function SourceLotsSection() {
           {SOURCE_LOTS.map((lot) => (
             <div key={lot.lotId} className="p-4">
               <div className="flex items-center justify-between gap-2">
-                <span className="font-mono text-xs font-semibold text-gray-800">{lot.lotId}</span>
-                <span className="text-xs font-semibold text-gray-900">{formatLitres(lot.volume)}</span>
+                <span className="font-mono text-[13px] font-semibold text-gray-900">{lot.lotId}</span>
+                <span className="rounded-full bg-emerald-50 px-2.5 py-0.5 text-sm font-bold text-emerald-700">{formatLitres(lot.volume)}</span>
               </div>
-              <p className="mt-1 text-xs text-gray-500">
+              <p className="mt-1.5 text-sm font-medium text-gray-800">
                 {lot.factory} → {lot.warehouse}
               </p>
-              <p className="mt-0.5 text-[11px] text-gray-400">
+              <p className="mt-0.5 text-[13px] text-gray-600">
                 {lot.date} · {lot.farmers} farmers · {lot.plots} plots
               </p>
             </div>

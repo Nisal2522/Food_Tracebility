@@ -44,8 +44,8 @@ export function Section({
     <motion.section
       id={id}
       className={cn(
-        "relative mx-auto w-full px-5 py-10",
-        view === "mobile" ? "max-w-2xl" : "max-w-7xl px-5 sm:px-10 lg:px-16",
+        "relative mx-auto w-full scroll-mt-16 px-4 py-8 sm:px-5 sm:py-10",
+        view === "mobile" ? "max-w-2xl" : "max-w-7xl px-4 sm:px-10 lg:px-16",
         className
       )}
       initial={{ opacity: 0, y: 24 }}
