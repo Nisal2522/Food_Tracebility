@@ -5,7 +5,6 @@ import { ScanningScreen } from "./components/flow/ScanningScreen";
 import { LoadingScreen } from "./components/flow/LoadingScreen";
 import { ReportPage } from "./components/report/ReportPage";
 import { DeviceViewProvider, useDeviceView } from "./context/device-view";
-import { DeviceViewToggle } from "./components/chrome/DeviceViewToggle";
 import { PhoneFrame } from "./components/chrome/PhoneFrame";
 
 type Stage = "landing" | "scanning" | "loading" | "report";
@@ -14,7 +13,6 @@ export default function App() {
   return (
     <DeviceViewProvider>
       <div style={{ fontFamily: "'Inter', sans-serif" }}>
-        <DeviceViewToggle />
         <AppFlow />
       </div>
     </DeviceViewProvider>
@@ -50,7 +48,7 @@ function AppFlow() {
           animate={{ opacity: 1 }}
           transition={{ duration: 0.4 }}
         >
-          <ReportPage onScanAnother={() => setStage("scanning")} />
+          <ReportPage />
         </motion.div>
       )}
     </AnimatePresence>

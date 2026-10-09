@@ -51,7 +51,7 @@ export function ParticipantsSection() {
       >
         {PARTICIPANTS.map((p, i) => (
           <motion.div
-            key={p.name}
+            key={`${p.role}-${p.name}`}
             initial={{ opacity: 0, x: 24 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
@@ -61,7 +61,7 @@ export function ParticipantsSection() {
             <GlassCard className="h-full p-5">
               <div className="flex items-start gap-3">
                 <div className="relative shrink-0">
-                  <img src={p.avatar} alt={p.name} className="h-14 w-14 rounded-2xl object-cover" />
+                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-50 text-2xl">{p.icon}</div>
                   {p.verified && (
                     <div className="absolute -bottom-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full border-2 border-white bg-emerald-500">
                       <BadgeCheck className="h-3 w-3 text-white" />
@@ -70,15 +70,19 @@ export function ParticipantsSection() {
                 </div>
                 <div className="min-w-0 flex-1">
                   <div className="mb-0.5 flex items-center gap-1.5">
-                    <span className="text-base leading-none">{p.logo}</span>
                     <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-[11px] font-semibold text-emerald-700">
                       {p.role}
                     </span>
+                    {p.optional && (
+                      <span className="rounded-full border border-dashed border-emerald-300 px-2 py-0.5 text-[11px] font-semibold text-emerald-600">
+                        Optional
+                      </span>
+                    )}
                   </div>
                   <p className="truncate text-sm font-bold text-gray-900" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
                     {p.name}
                   </p>
-                  <p className="truncate text-xs text-gray-500">{p.company}</p>
+                  <p className="truncate text-xs text-gray-500">{p.subtitle}</p>
                 </div>
               </div>
 

@@ -1,43 +1,40 @@
-// Realistic sample data for a single scanned product — Karthakolomban Mango
-// from Green Valley Farm, Matale, Sri Lanka.
+// Realistic sample data for a single scanned product — Organic King Coconut Water
+// from 500 farmers in Sri Lanka, exported to a customer in the United Kingdom.
+
+import productImage from "../../assets/king-coconut-water.jpg";
 
 export const PRODUCT = {
-  name: "Ceylon Karthakolomban Mango",
-  variety: "Karthakolomban Variety",
-  category: "Fresh Fruit",
-  batchId: "BAT-2026-00152",
-  productId: "PRD-000245",
-  sku: "MANGO-ORG-500",
-  countryFlag: "🇱🇰",
-  countryName: "Sri Lanka",
-  origin: "Matale District, Central Province",
-  status: "Available for Sale",
-  freshness: 94,
-  freshnessLabel: "Peak Freshness",
-  harvestDate: "14 Jul 2026",
-  expiryDate: "25 Jul 2026",
-  weight: "500g",
-  description:
-    "Hand-picked at peak ripeness from a certified-organic hillside orchard, then cold-chain delivered within 48 hours of harvest. Every mango in this batch is traced from blossom to shelf.",
-  heroImage:
-    "https://images.unsplash.com/photo-1553279768-865429fa0078?w=1200&h=1400&fit=crop&auto=format",
-  thumbImage:
-    "https://images.unsplash.com/photo-1553279768-865429fa0078?w=200&h=200&fit=crop&auto=format",
+  endProduct: "Organic King Coconut Water",
+  batchNo: "BATCH-KC-0001",
+  hsCode: "2009.89",
+  totalVolume: "100.00 litre",
+  manufacturingDate: "9 Oct 2026",
+  bestBefore: "11 Nov 2026",
+  shipmentDate: "8 Oct 2026",
+  consignmentNumber: "—",
+  countryOfLoading: "—",
+  countryOfOrigin: "SRI LANKA",
+  heroImage: productImage,
+};
+
+export type CountryCode = "LK" | "GB";
+
+export type JourneyEntity = {
+  name: string;
+  detail: string;
 };
 
 export type JourneyStage = {
   id: number;
   icon: string;
   label: string;
-  stage: string;
   date: string;
-  time: string;
-  country: string;
-  location: string;
-  organization: string;
-  person: string;
+  country: CountryCode;
+  entities: JourneyEntity[];
+  // Optional stages (e.g. buyer collection) may be skipped when farms deliver straight to the factory
+  optional?: boolean;
   image: string;
-  status: "Completed" | "Current" | "Upcoming";
+  status: "Completed" | "Current";
   temperature: string;
   details: string;
 };
@@ -45,144 +42,171 @@ export type JourneyStage = {
 export const JOURNEY: JourneyStage[] = [
   {
     id: 1,
-    icon: "🌱",
-    label: "Farm",
-    stage: "Harvest",
-    date: "12 Jul 2026",
-    time: "06:30 AM",
-    country: "🇱🇰",
-    location: "Green Valley Farm, Matale",
-    organization: "Green Valley Farm",
-    person: "Nimal Perera",
+    icon: "🌴",
+    label: "Harvested",
+    date: "7–8 Oct 2026",
+    country: "LK",
+    entities: [
+      { name: "500 Farmers", detail: "Smallholders, Kurunegala coconut belt" },
+      { name: "ABC (Pvt) Ltd", detail: "Farmer network, Kurunegala" },
+    ],
     image:
-      "https://images.unsplash.com/photo-1622955658214-d05c1c6fcf84?w=600&h=400&fit=crop&auto=format",
+      "https://images.unsplash.com/photo-1743947064386-23d317e8da5e?w=600&h=400&fit=crop&auto=format",
     status: "Completed",
-    temperature: "28°C",
+    temperature: "27°C",
     details:
-      "450 kg of Karthakolomban mangoes hand-harvested at peak ripeness from a certified-organic hillside orchard. Manual sorting and grading performed on-site; batch passed initial visual quality check before cold storage.",
+      "Young king coconuts (Thambili) hand-harvested at 6–7 months maturity from certified-organic smallholder plots. Every nut is logged against its farmer and plot so each lot can be traced back to source.",
   },
   {
     id: 2,
-    icon: "🏭",
-    label: "Processing",
-    stage: "Wash, Grade & Inspect",
-    date: "13 Jul 2026",
-    time: "08:15 AM",
-    country: "🇱🇰",
-    location: "ABC Food Processing Center, Kandy",
-    organization: "ABC Food Processing Center",
-    person: "Dilshan Fernando",
+    icon: "🧺",
+    label: "Collected by Buyer",
+    date: "8 Oct 2026",
+    country: "LK",
+    entities: [{ name: "ABC (Pvt) Ltd Collection Centre", detail: "Kurunegala" }],
+    optional: true,
     image:
-      "https://images.unsplash.com/photo-1669207334420-66d0e3450283?w=600&h=400&fit=crop&auto=format",
+      "https://images.unsplash.com/photo-1743947063482-3a7f53a6e0d9?w=600&h=400&fit=crop&auto=format",
     status: "Completed",
-    temperature: "22°C",
+    temperature: "24°C",
     details:
-      "Washing, grading and lab testing completed. Pesticide residue and microbiology tests passed. Organic certification re-verified against farm records. 420 kg approved for packaging and distribution.",
+      "Nuts from smaller farms were weighed, graded and consolidated before dispatch to the factories. This step is optional — larger farms deliver straight to the factory.",
   },
   {
     id: 3,
-    icon: "📦",
-    label: "Packaging",
-    stage: "Vacuum Sealed & Labeled",
-    date: "13 Jul 2026",
-    time: "12:00 PM",
-    country: "🇱🇰",
-    location: "ABC Food Processing Center, Kandy",
-    organization: "ABC Food Processing Center",
-    person: "Dilshan Fernando",
-    image:
-      "https://images.unsplash.com/photo-1519096845289-95806ee03a1a?w=600&h=400&fit=crop&auto=format",
+    icon: "🏭",
+    label: "Processed",
+    date: "8–9 Oct 2026",
+    country: "LK",
+    entities: [
+      { name: "Colombo Factory", detail: "Ja-Ela, Colombo" },
+      { name: "Hambantota Factory", detail: "Hambantota" },
+    ],
+    image: productImage,
     status: "Completed",
-    temperature: "20°C",
+    temperature: "4°C",
     details:
-      "Sealed into food-grade biodegradable trays with vacuum packaging to extend shelf life. Batch ID BAT-2026-00152 assigned and QR codes printed, each cryptographically linked to this blockchain record.",
+      "Nuts washed, opened on a closed hygienic line, micro-filtered and chilled with no added sugar or preservatives. Filled into 500 mL tamper-evident bottles and labelled with QR codes linked to this record.",
   },
   {
     id: 4,
-    icon: "🚚",
-    label: "Distribution",
-    stage: "Cold-Chain Transit",
-    date: "13 Jul 2026",
-    time: "03:00 PM",
-    country: "🇱🇰",
-    location: "En Route – Kandy to Colombo",
-    organization: "XYZ Logistics",
-    person: "Kasun Jayawardena",
+    icon: "📦",
+    label: "Exported from Sri Lanka",
+    date: "10 Oct 2026",
+    country: "LK",
+    entities: [
+      { name: "Colombo WH", detail: "Colombo Port" },
+      { name: "Kandy WH", detail: "Kandy" },
+    ],
     image:
-      "https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?w=600&h=400&fit=crop&auto=format",
+      "https://images.unsplash.com/photo-1651525670033-279c26cc2347?w=600&h=400&fit=crop&auto=format",
     status: "Completed",
     temperature: "4°C",
     details:
-      "Refrigerated vehicle WP CAB 4587 departed with real-time GPS and temperature tracking active throughout the 87 km route, maintaining an unbroken 4°C cold chain.",
+      "Lots palletised in cold storage, export documents cleared and the consignment loaded into a refrigerated container at 4°C for sea freight.",
   },
   {
     id: 5,
-    icon: "🏪",
-    label: "Retail",
-    stage: "Shelf-Stocked",
-    date: "14 Jul 2026",
-    time: "07:45 AM",
-    country: "🇱🇰",
-    location: "Cargills Food City – Kandy",
-    organization: "Cargills Food City",
-    person: "Pradeep Silva",
+    icon: "🚢",
+    label: "Dispatched to Customer",
+    date: "10 Oct 2026",
+    country: "GB",
+    entities: [{ name: "UK Company ABC", detail: "London, United Kingdom" }],
     image:
-      "https://images.unsplash.com/photo-1771019992524-9d83e1bf69bb?w=600&h=400&fit=crop&auto=format",
-    status: "Completed",
-    temperature: "4°C",
-    details:
-      "Batch received, refrigerated and shelf-stocked. QR codes scanned and verified against the blockchain ledger before the product was cleared for sale to consumers.",
-  },
-  {
-    id: 6,
-    icon: "👤",
-    label: "Customer",
-    stage: "Product Verified",
-    date: "14 Jul 2026",
-    time: "11:32 AM",
-    country: "🇱🇰",
-    location: "Cargills Food City – Kandy",
-    organization: "Consumer Scan",
-    person: "You",
-    image:
-      "https://images.unsplash.com/photo-1544531480-9eadeb3c8f41?w=600&h=400&fit=crop&auto=format",
+      "https://images.unsplash.com/photo-1751779057940-43cc385452f7?w=600&h=400&fit=crop&auto=format",
     status: "Current",
     temperature: "4°C",
     details:
-      "QR code scanned just now. Full farm-to-shelf traceability confirmed and blockchain verification complete — this product is authentic and untampered.",
+      "Consignment shipped in a reefer container from Colombo Port to the customer in the United Kingdom, with temperature logged throughout the voyage.",
   },
 ];
 
-export type RoutePoint = {
+// Facilities in the supply-chain graph, plotted on the route map by lat/lng
+export type RouteNode = {
+  id: string;
   label: string;
   icon: string;
   city: string;
   lat: number;
   lng: number;
-  x: number;
-  y: number;
   color: string;
-  status: "done" | "current";
+  optional?: boolean;
 };
 
-export const ROUTE: RoutePoint[] = [
-  { label: "Farm", icon: "🌱", city: "Matale", lat: 7.4675, lng: 80.6234, x: 52, y: 26, color: "#22c55e", status: "done" },
-  { label: "Processing Plant", icon: "🏭", city: "Kandy", lat: 7.2906, lng: 80.6337, x: 49, y: 38, color: "#3b82f6", status: "done" },
-  { label: "Warehouse", icon: "📦", city: "Peradeniya", lat: 7.2599, lng: 80.5977, x: 45, y: 43, color: "#8b5cf6", status: "done" },
-  { label: "Retail Store", icon: "🏪", city: "Kandy City", lat: 7.2955, lng: 80.6356, x: 49, y: 39, color: "#f59e0b", status: "current" },
+export const ROUTE_NODES: RouteNode[] = [
+  { id: "farms", label: "Farms (500)", icon: "🌴", city: "Kurunegala", lat: 7.6236, lng: 80.2392, color: "#22c55e" },
+  { id: "collection", label: "Collection Centre", icon: "🧺", city: "Kurunegala", lat: 7.4863, lng: 80.3647, color: "#84cc16", optional: true },
+  { id: "colombo-factory", label: "Colombo Factory", icon: "🏭", city: "Ja-Ela, Colombo", lat: 7.0744, lng: 79.8919, color: "#3b82f6" },
+  { id: "hambantota-factory", label: "Hambantota Factory", icon: "🏭", city: "Hambantota", lat: 6.1241, lng: 81.1185, color: "#3b82f6" },
+  { id: "colombo-wh", label: "Colombo WH", icon: "📦", city: "Colombo Port", lat: 6.9497, lng: 79.8428, color: "#8b5cf6" },
+  { id: "kandy-wh", label: "Kandy WH", icon: "📦", city: "Kandy", lat: 7.2906, lng: 80.6337, color: "#8b5cf6" },
 ];
 
-export const MAP_EMBED_URL =
-  "https://www.google.com/maps?q=Cargills+Food+City+Kandy+Sri+Lanka&z=12&output=embed";
+export const ROUTE_EDGES: { from: string; to: string; optional?: boolean }[] = [
+  { from: "farms", to: "collection", optional: true },
+  { from: "collection", to: "colombo-factory", optional: true },
+  { from: "collection", to: "hambantota-factory", optional: true },
+  { from: "farms", to: "colombo-factory" },
+  { from: "farms", to: "hambantota-factory" },
+  { from: "colombo-factory", to: "colombo-wh" },
+  { from: "hambantota-factory", to: "kandy-wh" },
+];
 
-export const ROUTE_OVERVIEW_MAP_EMBED_URL =
-  "https://www.google.com/maps?q=Kandy,Sri+Lanka&z=11&output=embed";
+// The overview map is centred here at this zoom so markers can be projected onto it
+export const ROUTE_MAP_VIEW = { lat: 6.9, lng: 80.48, zoom: 8 };
 
-export const JOURNEY_SUMMARY = {
-  totalDistance: "109 km",
-  duration: "4h 15min",
-  currentLocation: "Cargills Food City, Kandy",
-  deliveryStatus: "Delivered",
+export const ROUTE_OVERVIEW_MAP_EMBED_URL = `https://maps.google.com/maps?ll=${ROUTE_MAP_VIEW.lat},${ROUTE_MAP_VIEW.lng}&z=${ROUTE_MAP_VIEW.zoom}&output=embed`;
+
+export const CUSTOMER = {
+  country: "United Kingdom",
+};
+
+export const MAP_EMBED_URL = "https://www.google.com/maps?q=London,United+Kingdom&z=10&output=embed";
+
+export type SourceLot = {
+  lotId: string;
+  date: string;
+  factory: string;
+  warehouse: string;
+  volume: number; // litres
+  farmers: number;
+  plots: number;
+};
+
+export const SOURCE_LOTS: SourceLot[] = [
+  { lotId: "LOT-KC-0101", date: "8 Oct 2026", factory: "Colombo Factory", warehouse: "Colombo WH", volume: 18.5, farmers: 92, plots: 104 },
+  { lotId: "LOT-KC-0102", date: "8 Oct 2026", factory: "Colombo Factory", warehouse: "Colombo WH", volume: 16.75, farmers: 81, plots: 95 },
+  { lotId: "LOT-KC-0103", date: "9 Oct 2026", factory: "Colombo Factory", warehouse: "Colombo WH", volume: 17.25, farmers: 88, plots: 99 },
+  { lotId: "LOT-KC-0104", date: "8 Oct 2026", factory: "Hambantota Factory", warehouse: "Kandy WH", volume: 15.8, farmers: 79, plots: 101 },
+  { lotId: "LOT-KC-0105", date: "9 Oct 2026", factory: "Hambantota Factory", warehouse: "Kandy WH", volume: 16.2, farmers: 83, plots: 107 },
+  { lotId: "LOT-KC-0106", date: "9 Oct 2026", factory: "Hambantota Factory", warehouse: "Kandy WH", volume: 15.5, farmers: 77, plots: 106 },
+];
+
+export type OriginArea = {
+  name: string;
+  farmers: number;
+  plots: number;
+  areaHa: number;
+};
+
+export const ORIGIN_AREAS: OriginArea[] = [
+  { name: "Wariyapola", farmers: 210, plots: 258, areaHa: 542.3 },
+  { name: "Kurunegala", farmers: 158, plots: 190, areaHa: 398.7 },
+  { name: "Mawathagama", farmers: 132, plots: 164, areaHa: 343.6 },
+];
+
+export const ORIGIN_SUMMARY = {
+  region: "Kurunegala District",
+  province: "North Western Province, Sri Lanka",
+  variety: "King Coconut (Cocos nucifera var. aurantiaca)",
+  farmers: ORIGIN_AREAS.reduce((sum, a) => sum + a.farmers, 0),
+  plots: ORIGIN_AREAS.reduce((sum, a) => sum + a.plots, 0),
+  totalAreaHa: ORIGIN_AREAS.reduce((sum, a) => sum + a.areaHa, 0),
+  checks: [
+    { label: "Plots geo-located", value: "612 / 612" },
+    { label: "Organic certified plots", value: "612 / 612" },
+    { label: "Deforestation-free since 2020", value: "Verified" },
+  ],
 };
 
 export type QualityTest = {
@@ -217,58 +241,77 @@ export type Participant = {
   role: string;
   icon: string;
   name: string;
-  company: string;
+  subtitle: string;
   location: string;
   certification: string;
   verified: boolean;
-  avatar: string;
-  logo: string;
+  optional?: boolean;
 };
 
 export const PARTICIPANTS: Participant[] = [
   {
-    role: "Farmer",
-    icon: "🌱",
-    name: "Nimal Perera",
-    company: "Green Valley Farm",
-    location: "Matale, Sri Lanka",
-    certification: "SLSI Organic Certified",
+    role: "Farmers",
+    icon: "🌴",
+    name: "ABC (Pvt) Ltd",
+    subtitle: "500 registered farmers",
+    location: "Kurunegala, Sri Lanka",
+    certification: "Organic Group Certified",
     verified: true,
-    avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&h=120&fit=crop&auto=format",
-    logo: "🌿",
+  },
+  {
+    role: "Collector",
+    icon: "🧺",
+    name: "ABC (Pvt) Ltd Collection Centre",
+    subtitle: "Buyer collection point",
+    location: "Kurunegala, Sri Lanka",
+    certification: "GlobalG.A.P. Registered",
+    verified: true,
+    optional: true,
   },
   {
     role: "Processor",
     icon: "🏭",
-    name: "Dilshan Fernando",
-    company: "ABC Food Processing Center",
-    location: "Kandy, Sri Lanka",
+    name: "Colombo Factory",
+    subtitle: "3 lots · 52.50 L",
+    location: "Ja-Ela, Colombo, Sri Lanka",
     certification: "HACCP Certified",
     verified: true,
-    avatar: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=120&h=120&fit=crop&auto=format",
-    logo: "🏭",
   },
   {
-    role: "Distributor",
-    icon: "🚚",
-    name: "Kasun Jayawardena",
-    company: "XYZ Logistics",
-    location: "Kandy, Sri Lanka",
-    certification: "Cold-Chain Certified",
+    role: "Processor",
+    icon: "🏭",
+    name: "Hambantota Factory",
+    subtitle: "3 lots · 47.50 L",
+    location: "Hambantota, Sri Lanka",
+    certification: "HACCP Certified",
     verified: true,
-    avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=120&h=120&fit=crop&auto=format",
-    logo: "🚚",
   },
   {
-    role: "Retailer",
-    icon: "🏪",
-    name: "Pradeep Silva",
-    company: "Cargills Food City",
+    role: "Exporter",
+    icon: "📦",
+    name: "Colombo WH",
+    subtitle: "Export warehouse · Colombo Port",
+    location: "Colombo, Sri Lanka",
+    certification: "ISO 22000 Certified",
+    verified: true,
+  },
+  {
+    role: "Exporter",
+    icon: "📦",
+    name: "Kandy WH",
+    subtitle: "Export warehouse",
     location: "Kandy, Sri Lanka",
     certification: "ISO 22000 Certified",
     verified: true,
-    avatar: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=120&h=120&fit=crop&auto=format",
-    logo: "🏬",
+  },
+  {
+    role: "Customer",
+    icon: "🚢",
+    name: "UK Company ABC",
+    subtitle: "Importer",
+    location: "London, United Kingdom",
+    certification: "BRCGS Certified",
+    verified: true,
   },
 ];
 
@@ -307,7 +350,7 @@ export const CERTIFICATIONS: Certification[] = [
     icon: "🧪",
     number: "HACCP-2026-3392",
     issuer: "Bureau Veritas Sri Lanka",
-    validity: "Valid until 09 Nov 2026",
+    validity: "Valid until 09 Nov 2027",
     status: "Verified",
   },
   {
@@ -325,7 +368,7 @@ export const CERTIFICATIONS: Certification[] = [
     icon: "✅",
     number: "CU 844213-ORG",
     issuer: "Control Union Certifications",
-    validity: "Valid until 05 Aug 2026",
+    validity: "Valid until 05 Aug 2027",
     status: "Verified",
   },
 ];

@@ -1,36 +1,37 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { CheckCircle2, Calendar, Factory, Weight, Globe, ChevronDown } from "lucide-react";
+import { CheckCircle2, Calendar, Factory, Globe, ChevronDown, Hash, Droplets, Ship, Package, Anchor } from "lucide-react";
 import { PRODUCT } from "../../data/traceability";
 import { useDeviceView } from "../../context/device-view";
 import { cn } from "../ui/utils";
 import { GlassCard } from "./shared";
 import { SriLankaFlag } from "./SriLankaFlag";
 
-const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+const iconClass = "h-4 w-4 text-emerald-500";
 
-function parseDisplayDate(value: string): Date {
-  const [day, month, year] = value.split(" ");
-  return new Date(Number(year), MONTHS.indexOf(month), Number(day));
-}
+const DETAILS: { icon: React.ReactNode; label: string; value: string; accent?: boolean }[] = [
+  { icon: <Hash className={iconClass} />, label: "HS Code", value: PRODUCT.hsCode },
+  { icon: <Droplets className={iconClass} />, label: "Total Volume", value: PRODUCT.totalVolume },
+  { icon: <Factory className={iconClass} />, label: "Manufacturing Date", value: PRODUCT.manufacturingDate },
+  { icon: <Calendar className={iconClass} />, label: "Best Before", value: PRODUCT.bestBefore, accent: true },
+  { icon: <Ship className={iconClass} />, label: "Shipment Date", value: PRODUCT.shipmentDate },
+  { icon: <Package className={iconClass} />, label: "Consignment Number", value: PRODUCT.consignmentNumber },
+  { icon: <Anchor className={iconClass} />, label: "Country of Loading", value: PRODUCT.countryOfLoading },
+  { icon: <Globe className={iconClass} />, label: "Country of Origin", value: PRODUCT.countryOfOrigin },
+];
 
-function daysBetween(startStr: string, endStr: string): number {
-  const start = parseDisplayDate(startStr);
-  const end = parseDisplayDate(endStr);
-  const diffDays = Math.round((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
-  return Math.max(0, diffDays);
-}
+// Tiles shown before "Show more details" on mobile
+const MOBILE_VISIBLE = 4;
 
 export function HeroSection() {
   const { view } = useDeviceView();
   const [detailsExpanded, setDetailsExpanded] = useState(false);
-  const daysRemaining = daysBetween(PRODUCT.harvestDate, PRODUCT.expiryDate);
   return (
     <section className="relative">
       <div className="relative mx-4 h-[62vh] min-h-[420px] overflow-hidden rounded-[28px] sm:mx-0 sm:rounded-t-none sm:rounded-b-[32px]">
         <img
           src={PRODUCT.heroImage}
-          alt={PRODUCT.name}
+          alt={PRODUCT.endProduct}
           className="h-full w-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-black/0" />
@@ -66,11 +67,8 @@ export function HeroSection() {
       >
         <GlassCard className="p-6">
           <div className="flex flex-wrap items-center gap-2">
-            <span className="rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-700">
-              {PRODUCT.category}
-            </span>
             <span className="rounded-full bg-gray-50 px-2.5 py-1 text-xs font-mono text-gray-500">
-              {PRODUCT.batchId}
+              {PRODUCT.batchNo}
             </span>
           </div>
 
@@ -78,27 +76,13 @@ export function HeroSection() {
             className="mt-3 text-3xl font-bold leading-tight text-gray-900"
             style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
           >
-            {PRODUCT.name}
+            {PRODUCT.endProduct}
           </h1>
-          <p className="mt-1 text-sm text-gray-500">{PRODUCT.variety} · {PRODUCT.origin}</p>
-
-          <p className="mt-4 text-sm leading-relaxed text-gray-600">{PRODUCT.description}</p>
 
           <div className={cn("mt-5 grid grid-cols-2 gap-3", view === "desktop" && "sm:grid-cols-4")}>
-            <InfoTile icon={<Factory className="h-4 w-4 text-emerald-500" />} label="Manufacturing" value={PRODUCT.harvestDate} />
-            <InfoTile
-              icon={<Calendar className="h-4 w-4 text-emerald-500" />}
-              label="Best Before"
-              value={PRODUCT.expiryDate}
-              accent
-            />
-
-            {view === "desktop" && (
-              <>
-                <InfoTile icon={<Weight className="h-4 w-4 text-emerald-500" />} label="Net Weight" value={PRODUCT.weight} />
-                <InfoTile icon={<Globe className="h-4 w-4 text-emerald-500" />} label="Country of Origin" value={PRODUCT.countryName} />
-              </>
-            )}
+            {(view === "desktop" ? DETAILS : DETAILS.slice(0, MOBILE_VISIBLE)).map((d) => (
+              <InfoTile key={d.label} {...d} />
+            ))}
           </div>
 
           {view === "mobile" && (
@@ -113,8 +97,9 @@ export function HeroSection() {
                     className="overflow-hidden"
                   >
                     <div className="mt-3 grid grid-cols-2 gap-3">
-                      <InfoTile icon={<Weight className="h-4 w-4 text-emerald-500" />} label="Net Weight" value={PRODUCT.weight} />
-                      <InfoTile icon={<Globe className="h-4 w-4 text-emerald-500" />} label="Country of Origin" value={PRODUCT.countryName} />
+                      {DETAILS.slice(MOBILE_VISIBLE).map((d) => (
+                        <InfoTile key={d.label} {...d} />
+                      ))}
                     </div>
                   </motion.div>
                 )}
@@ -133,21 +118,6 @@ export function HeroSection() {
               </button>
             </>
           )}
-
-          <div className="mt-4">
-            <div className="mb-1 flex items-center justify-between text-xs">
-              <span className="font-medium text-gray-500">{PRODUCT.freshnessLabel}</span>
-              <span className="font-semibold text-emerald-600">{daysRemaining} days remaining</span>
-            </div>
-            <div className="h-2 w-full overflow-hidden rounded-full bg-emerald-50">
-              <motion.div
-                className="h-full rounded-full bg-gradient-to-r from-emerald-400 to-green-500"
-                initial={{ width: 0 }}
-                animate={{ width: `${PRODUCT.freshness}%` }}
-                transition={{ delay: 0.5, duration: 1, ease: "easeOut" }}
-              />
-            </div>
-          </div>
         </GlassCard>
       </motion.div>
     </section>
