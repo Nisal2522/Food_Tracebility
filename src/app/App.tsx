@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { LandingScreen } from "./components/flow/LandingScreen";
 import { ScanningScreen } from "./components/flow/ScanningScreen";
 import { LoadingScreen } from "./components/flow/LoadingScreen";
+import { SplashScreen } from "./components/flow/SplashScreen";
 import { ReportPage } from "./components/report/ReportPage";
 import { DeviceViewProvider, useDeviceView } from "./context/device-view";
 import { PhoneFrame } from "./components/chrome/PhoneFrame";
@@ -14,6 +15,7 @@ export default function App() {
     <DeviceViewProvider>
       <div style={{ fontFamily: "'Inter', sans-serif" }}>
         <AppFlow />
+        <Splash />
       </div>
     </DeviceViewProvider>
   );
@@ -55,4 +57,25 @@ function AppFlow() {
   );
 
   return view === "mobile" ? <PhoneFrame>{content}</PhoneFrame> : content;
+}
+
+// Branded splash shown over the report on first open; the report renders underneath so it's ready when this fades out
+function Splash() {
+  const [visible, setVisible] = useState(true);
+  const hide = useCallback(() => setVisible(false), []);
+
+  return (
+    <AnimatePresence>
+      {visible && (
+        <motion.div
+          key="splash"
+          className="fixed inset-0 z-[100]"
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.5, ease: "easeInOut" }}
+        >
+          <SplashScreen onComplete={hide} />
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
 }

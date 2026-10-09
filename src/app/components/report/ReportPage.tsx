@@ -1,7 +1,6 @@
 import { useDeviceView } from "../../context/device-view";
 import { cn } from "../ui/utils";
 import { HeroSection } from "./HeroSection";
-import { SectionNav } from "./SectionNav";
 import { JourneyTimelineSection } from "./JourneyTimelineSection";
 import { RouteMapSection } from "./RouteMapSection";
 import { OriginSummarySection } from "./OriginSummarySection";
@@ -17,7 +16,6 @@ export function ReportPage() {
       <OrganicBackdrop />
 
       <HeroSection />
-      <SectionNav />
       <JourneyTimelineSection />
       <RouteMapSection />
       <OriginSummarySection />

@@ -1,12 +1,20 @@
 import { useState } from "react";
-import { motion, AnimatePresence } from "motion/react";
+import { motion, AnimatePresence, useReducedMotion } from "motion/react";
 import { ChevronDown, MapPin, Thermometer, Building2 } from "lucide-react";
 import { JOURNEY } from "../../data/traceability";
 import { GlassCard, Section } from "./shared";
 import { CountryFlag } from "./CountryFlag";
 
+// Seconds the flow dot takes to travel from one step to the next
+const LINK_SECONDS = 2;
+
 export function JourneyTimelineSection() {
-  const [expanded, setExpanded] = useState<number | null>(JOURNEY.length - 1);
+  const [expanded, setExpanded] = useState<number | null>(null);
+  // Index of the connector the flow dot is currently travelling along; it walks step to step and loops
+  const [activeLink, setActiveLink] = useState(0);
+  const reduceMotion = useReducedMotion();
+  const linkCount = JOURNEY.length - 1;
+  const advanceLink = () => setActiveLink((link) => (link + 1) % linkCount);
 
   return (
     <Section id="journey" eyebrow="Traceability" title="Product Chain Journey">
@@ -30,7 +38,10 @@ export function JourneyTimelineSection() {
                   {isCurrent && (
                     <span className="absolute inset-0 animate-ping rounded-full bg-blue-400/40" aria-hidden />
                   )}
-                  <div
+                  <motion.div
+                    initial={false}
+                    animate={!reduceMotion && i > 0 && activeLink === i - 1 ? { scale: [1, 1, 1.18, 1] } : { scale: 1 }}
+                    transition={{ duration: LINK_SECONDS, times: [0, 0.85, 0.93, 1] }}
                     className={`relative flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-lg shadow-md sm:h-11 sm:w-11 ${
                       isDone
                         ? "bg-gradient-to-br from-emerald-400 to-green-500 shadow-emerald-200"
@@ -40,7 +51,7 @@ export function JourneyTimelineSection() {
                     }`}
                   >
                     {stage.icon}
-                  </div>
+                  </motion.div>
                 </motion.div>
                 {!isLast && (
                   <motion.div
@@ -49,18 +60,27 @@ export function JourneyTimelineSection() {
                     viewport={{ once: true }}
                     transition={{ delay: i * 0.12 + 0.2, duration: 0.6, ease: "easeOut" }}
                     style={{ originY: 0 }}
-                    className={`relative mb-1 mt-1 min-h-10 w-0.5 flex-1 overflow-hidden rounded-full ${
-                      isDone ? "bg-emerald-200" : "bg-gray-200"
-                    }`}
+                    className="relative mb-1 mt-1 flex min-h-10 w-3 flex-1 justify-center"
                   >
-                    {/* Glowing pulse travelling down the line to show product flow */}
-                    {isDone && (
-                      <motion.span
-                        className="absolute inset-x-0 h-8 bg-gradient-to-b from-transparent via-emerald-500 to-transparent"
-                        initial={{ top: "-35%" }}
-                        animate={{ top: "100%" }}
-                        transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut", delay: i * 0.35, repeatDelay: 0.6 }}
-                      />
+                    <span className={`absolute inset-y-0 w-0.5 rounded-full ${isDone ? "bg-emerald-200" : "bg-gray-200"}`} />
+                    {isDone && !reduceMotion && activeLink === i && (
+                      <>
+                        <motion.span
+                          key={`fill-${i}`}
+                          className="absolute top-0 w-0.5 rounded-full bg-emerald-500"
+                          initial={{ height: "0%", opacity: 1 }}
+                          animate={{ height: "100%", opacity: [1, 1, 0] }}
+                          transition={{ duration: LINK_SECONDS, ease: "easeInOut", opacity: { times: [0, 0.85, 1], duration: LINK_SECONDS } }}
+                        />
+                        <motion.span
+                          key={`dot-${i}`}
+                          className="absolute h-3 w-3 -translate-y-1/2 rounded-full bg-emerald-500 shadow-[0_0_0_4px_rgba(16,185,129,0.2),0_0_12px_rgba(16,185,129,0.7)]"
+                          initial={{ top: "0%" }}
+                          animate={{ top: "100%" }}
+                          transition={{ duration: LINK_SECONDS, ease: "easeInOut" }}
+                          onAnimationComplete={advanceLink}
+                        />
+                      </>
                     )}
                   </motion.div>
                 )}

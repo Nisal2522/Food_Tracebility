@@ -155,8 +155,6 @@ export const CUSTOMER = {
   country: "United Kingdom",
 };
 
-export const MAP_EMBED_URL = "https://www.google.com/maps?q=London,United+Kingdom&z=10&output=embed";
-
 export type SourceLot = {
   lotId: string;
   date: string;
@@ -197,6 +195,48 @@ export const ORIGIN_SUMMARY = {
   plots: ORIGIN_AREAS.reduce((sum, a) => sum + a.plots, 0),
   totalAreaHa: ORIGIN_AREAS.reduce((sum, a) => sum + a.areaHa, 0),
 };
+
+// Approximate centre of each sourcing area, used to scatter farmer locations
+const ORIGIN_AREA_CENTRES: Record<string, { lat: number; lng: number }> = {
+  Wariyapola: { lat: 7.6236, lng: 80.2392 },
+  Kurunegala: { lat: 7.4863, lng: 80.3647 },
+  Mawathagama: { lat: 7.4319, lng: 80.443 },
+};
+
+export type FarmerPoint = { id: string; area: string; lat: number; lng: number };
+
+// Deterministic PRNG so the sample farmer locations are identical on every load
+function seededRandom(seed: number) {
+  let t = seed;
+  return () => {
+    t += 0x6d2b79f5;
+    let r = Math.imul(t ^ (t >>> 15), 1 | t);
+    r ^= r + Math.imul(r ^ (r >>> 7), 61 | r);
+    return ((r ^ (r >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+export const FARMER_POINTS: FarmerPoint[] = (() => {
+  const rand = seededRandom(2026);
+  const points: FarmerPoint[] = [];
+  ORIGIN_AREAS.forEach((area) => {
+    const centre = ORIGIN_AREA_CENTRES[area.name];
+    for (let i = 0; i < area.farmers; i++) {
+      // Box–Muller gives a natural cluster around the area centre
+      const radius = Math.sqrt(-2 * Math.log(1 - rand())) * 0.04;
+      const angle = 2 * Math.PI * rand();
+      points.push({
+        id: `F-${String(points.length + 1).padStart(3, "0")}`,
+        area: area.name,
+        lat: centre.lat + radius * Math.sin(angle),
+        lng: centre.lng + radius * Math.cos(angle),
+      });
+    }
+  });
+  return points;
+})();
+
+export const FACILITY_POINT_IDS = ["colombo-factory", "hambantota-factory", "colombo-wh", "kandy-wh"];
 
 export type QualityTest = {
   name: string;

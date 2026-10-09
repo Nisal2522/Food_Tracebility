@@ -1,37 +1,22 @@
 import { motion } from "motion/react";
+import { MapPin } from "lucide-react";
 import {
   ROUTE_NODES,
   ROUTE_EDGES,
   ROUTE_MAP_VIEW,
   CUSTOMER,
-  MAP_EMBED_URL,
+  FARMER_POINTS,
+  FACILITY_POINT_IDS,
   ROUTE_OVERVIEW_MAP_EMBED_URL,
 } from "../../data/traceability";
 import { GlassCard, Section } from "./shared";
 import { SriLankaFlag } from "./SriLankaFlag";
 import { CountryFlag } from "./CountryFlag";
-
-const TILE_SIZE = 256;
-
-// Web Mercator pixel position at the given zoom, matching how the embedded Google map is drawn
-function project(lat: number, lng: number, zoom: number) {
-  const scale = TILE_SIZE * 2 ** zoom;
-  const sin = Math.sin((lat * Math.PI) / 180);
-  return {
-    x: ((lng + 180) / 360) * scale,
-    y: (0.5 - Math.log((1 + sin) / (1 - sin)) / (4 * Math.PI)) * scale,
-  };
-}
-
-// Pixel offset of a point from the map centre, so markers stay aligned at any container width
-function offsetFromCentre(lat: number, lng: number) {
-  const centre = project(ROUTE_MAP_VIEW.lat, ROUTE_MAP_VIEW.lng, ROUTE_MAP_VIEW.zoom);
-  const point = project(lat, lng, ROUTE_MAP_VIEW.zoom);
-  return { dx: point.x - centre.x, dy: point.y - centre.y };
-}
+import { LocationsMap } from "./LocationsMap";
+import { offsetFromCentre } from "./mapProjection";
 
 export function RouteMapSection() {
-  const nodes = ROUTE_NODES.map((node) => ({ ...node, ...offsetFromCentre(node.lat, node.lng) }));
+  const nodes = ROUTE_NODES.map((node) => ({ ...node, ...offsetFromCentre(node.lat, node.lng, ROUTE_MAP_VIEW) }));
   const byId = Object.fromEntries(nodes.map((n) => [n.id, n]));
 
   return (
@@ -130,16 +115,24 @@ export function RouteMapSection() {
         </div>
 
         <div className="border-t border-gray-100 p-4">
-          <p className="mb-2 text-sm font-semibold text-gray-700">Customer Destination</p>
+          <div className="mb-3 flex items-center justify-between gap-2">
+            <p className="text-sm font-semibold text-gray-800">Farmer & Facility Locations</p>
+            <span className="rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-bold text-emerald-700">
+              {FARMER_POINTS.length + FACILITY_POINT_IDS.length} points
+            </span>
+          </div>
           <div className="overflow-hidden rounded-2xl border border-gray-100">
-            <iframe
-              title="Customer location"
-              src={MAP_EMBED_URL}
-              width="100%"
-              height="220"
-              loading="lazy"
-              style={{ border: 0, display: "block" }}
-            />
+            <LocationsMap className="h-72 w-full sm:h-96" />
+          </div>
+          <div className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-2">
+            <span className="flex items-center gap-2 text-[13px] text-gray-700">
+              <MapPin className="h-4 w-4 fill-green-600 text-white drop-shadow" strokeWidth={1.5} />
+              {FARMER_POINTS.length} farmers
+            </span>
+            <span className="flex items-center gap-2 text-[13px] text-gray-700">
+              <MapPin className="h-5 w-5 fill-blue-500 text-white drop-shadow" strokeWidth={1.5} />
+              {FACILITY_POINT_IDS.length} facilities (factories & warehouses)
+            </span>
           </div>
         </div>
       </GlassCard>
