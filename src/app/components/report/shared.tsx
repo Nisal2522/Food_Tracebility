@@ -14,7 +14,7 @@ export function GlassCard({
   return (
     <As
       className={cn(
-        "rounded-[20px] border border-white/60 bg-white/70 backdrop-blur-xl",
+        "rounded-[20px] border border-white/60 bg-white/95 sm:bg-white/70 sm:backdrop-blur-xl",
         "shadow-[0_8px_30px_rgba(16,64,32,0.06)]",
         className
       )}
@@ -91,11 +91,9 @@ export function StatusPill({ status }: { status: "Passed" | "Warning" | "Failed"
 export function OrganicBackdrop() {
   return (
     <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
-      <div className="absolute -left-24 -top-24 h-96 w-96 rounded-full bg-emerald-200/40 blur-3xl" />
-      <div className="absolute -right-32 top-72 h-[28rem] w-[28rem] rounded-full bg-green-100/60 blur-3xl" />
-      <div className="absolute left-1/3 top-[140vh] h-[26rem] w-[26rem] rounded-full bg-teal-100/50 blur-3xl" />
-      <div className="absolute -right-24 top-[220vh] h-96 w-96 rounded-full bg-emerald-100/50 blur-3xl" />
-      <div className="absolute left-0 top-[300vh] h-96 w-96 rounded-full bg-lime-100/40 blur-3xl" />
+      {/* Soft glows drawn with radial gradients rather than blur filters, which are expensive on phones */}
+      <div className="absolute -left-32 -top-32 h-[32rem] w-[32rem] rounded-full bg-[radial-gradient(circle,rgba(167,243,208,0.45),transparent_65%)]" />
+      <div className="absolute -right-40 top-64 h-[36rem] w-[36rem] rounded-full bg-[radial-gradient(circle,rgba(220,252,231,0.7),transparent_65%)]" />
     </div>
   );
 }

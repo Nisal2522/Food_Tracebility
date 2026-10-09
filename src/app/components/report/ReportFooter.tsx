@@ -1,6 +1,6 @@
 import { useDeviceView } from "../../context/device-view";
 import { cn } from "../ui/utils";
-import terraxLogo from "../../../assets/terrax-logo.png";
+import terraxLogo from "../../../assets/terrax-logo.webp";
 
 const BADGES = ["Digital Product Passport", "GS1 Compatible", "ISO 22095"];
 

@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { motion, AnimatePresence, useReducedMotion } from "motion/react";
-import { ChevronDown, MapPin, Thermometer, Building2 } from "lucide-react";
+import { motion, useReducedMotion } from "motion/react";
+import { MapPin, Building2 } from "lucide-react";
 import { JOURNEY } from "../../data/traceability";
 import { GlassCard, Section } from "./shared";
 import { CountryFlag } from "./CountryFlag";
@@ -9,7 +9,6 @@ import { CountryFlag } from "./CountryFlag";
 const LINK_SECONDS = 2;
 
 export function JourneyTimelineSection() {
-  const [expanded, setExpanded] = useState<number | null>(null);
   // Index of the connector the flow dot is currently travelling along; it walks step to step and loops
   const [activeLink, setActiveLink] = useState(0);
   const reduceMotion = useReducedMotion();
@@ -23,7 +22,6 @@ export function JourneyTimelineSection() {
           const isLast = i === JOURNEY.length - 1;
           const isDone = stage.status === "Completed";
           const isCurrent = stage.status === "Current";
-          const open = expanded === i;
 
           return (
             <div key={stage.id} className="flex gap-3 sm:gap-4">
@@ -98,12 +96,7 @@ export function JourneyTimelineSection() {
                     isCurrent ? "ring-1 ring-blue-200" : ""
                   }`}
                 >
-                  <button
-                    type="button"
-                    onClick={() => setExpanded(open ? null : i)}
-                    aria-expanded={open}
-                    className="w-full p-4 text-left"
-                  >
+                  <div className="p-4">
                     <div className="flex items-start justify-between gap-2">
                       <p
                         className="text-[15px] font-bold leading-snug text-gray-900"
@@ -146,42 +139,7 @@ export function JourneyTimelineSection() {
                       ))}
                     </ul>
 
-                    <span className="mt-3 flex items-center justify-center gap-1 border-t border-gray-100 pt-3 text-[13px] font-semibold text-emerald-700">
-                      {open ? "Hide details" : "View details"}
-                      <ChevronDown className={`h-4 w-4 transition-transform duration-300 ${open ? "rotate-180" : ""}`} />
-                    </span>
-                  </button>
-
-                  <AnimatePresence initial={false}>
-                    {open && (
-                      <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: "auto", opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.3, ease: "easeInOut" }}
-                        className="overflow-hidden"
-                      >
-                        <div className="px-4 pb-4">
-                          <div className="mb-3 h-44 overflow-hidden rounded-xl sm:h-52">
-                            <motion.img
-                              src={stage.image}
-                              alt={stage.label}
-                              className="h-full w-full object-cover"
-                              initial={{ scale: 1.15 }}
-                              animate={{ scale: 1 }}
-                              transition={{ duration: 0.8, ease: "easeOut" }}
-                            />
-                          </div>
-                          <p className="text-sm leading-relaxed text-gray-700">{stage.details}</p>
-                          <div className="mt-3 inline-flex items-center gap-2 rounded-xl bg-gray-50 px-3 py-2">
-                            <Thermometer className="h-4 w-4 text-emerald-500" />
-                            <span className="text-xs text-gray-500">Temperature</span>
-                            <span className="text-sm font-semibold text-gray-900">{stage.temperature}</span>
-                          </div>
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
+                  </div>
                 </GlassCard>
               </motion.div>
             </div>

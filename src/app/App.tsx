@@ -71,7 +71,7 @@ function Splash() {
           key="splash"
           className="fixed inset-0 z-[100]"
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.5, ease: "easeInOut" }}
+          transition={{ duration: 0.35, ease: "easeInOut" }}
         >
           <SplashScreen onComplete={hide} />
         </motion.div>

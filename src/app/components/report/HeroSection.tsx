@@ -45,6 +45,8 @@ export function HeroSection() {
           <img
             src={PRODUCT.heroImage}
             alt={PRODUCT.endProduct}
+            decoding="async"
+            {...{ fetchpriority: "high" }}
             className="h-full w-full object-cover object-[center_40%] sm:mx-auto sm:w-auto sm:rounded-3xl sm:shadow-[0_30px_60px_rgba(0,0,0,0.35)] sm:ring-4 sm:ring-white/40"
           />
         </motion.div>

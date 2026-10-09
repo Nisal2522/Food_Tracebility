@@ -1,7 +1,7 @@
 // Realistic sample data for a single scanned product — Organic King Coconut Water
 // from 500 farmers in Sri Lanka, exported to a customer in the United Kingdom.
 
-import productImage from "../../assets/king-coconut-water.jpg";
+import productImage from "../../assets/king-coconut-water.webp";
 
 export const PRODUCT = {
   endProduct: "Organic King Coconut Water",
@@ -31,10 +31,7 @@ export type JourneyStage = {
   date: string;
   country: CountryCode;
   entities: JourneyEntity[];
-  image: string;
   status: "Completed" | "Current";
-  temperature: string;
-  details: string;
 };
 
 export const JOURNEY: JourneyStage[] = [
@@ -48,12 +45,7 @@ export const JOURNEY: JourneyStage[] = [
       { name: "500 Farmers", detail: "Smallholders, Kurunegala coconut belt" },
       { name: "ABC (Pvt) Ltd", detail: "Farmer network, Kurunegala" },
     ],
-    image:
-      "https://images.unsplash.com/photo-1743947064386-23d317e8da5e?w=600&h=400&fit=crop&auto=format",
     status: "Completed",
-    temperature: "27°C",
-    details:
-      "Young king coconuts (Thambili) hand-harvested at 6–7 months maturity from certified-organic smallholder plots. Every nut is logged against its farmer and plot so each lot can be traced back to source.",
   },
   {
     id: 2,
@@ -62,12 +54,7 @@ export const JOURNEY: JourneyStage[] = [
     date: "8 Oct 2026",
     country: "LK",
     entities: [{ name: "ABC (Pvt) Ltd Collection Centre", detail: "Kurunegala" }],
-    image:
-      "https://images.unsplash.com/photo-1743947063482-3a7f53a6e0d9?w=600&h=400&fit=crop&auto=format",
     status: "Completed",
-    temperature: "24°C",
-    details:
-      "Nuts were weighed, graded and consolidated at the collection centre before dispatch to the factories.",
   },
   {
     id: 3,
@@ -79,11 +66,7 @@ export const JOURNEY: JourneyStage[] = [
       { name: "Colombo Factory", detail: "Ja-Ela, Colombo" },
       { name: "Hambantota Factory", detail: "Hambantota" },
     ],
-    image: productImage,
     status: "Completed",
-    temperature: "4°C",
-    details:
-      "Nuts washed, opened on a closed hygienic line, micro-filtered and chilled with no added sugar or preservatives. Filled into 500 mL tamper-evident bottles and labelled with QR codes linked to this record.",
   },
   {
     id: 4,
@@ -95,12 +78,7 @@ export const JOURNEY: JourneyStage[] = [
       { name: "Colombo WH", detail: "Colombo Port" },
       { name: "Kandy WH", detail: "Kandy" },
     ],
-    image:
-      "https://images.unsplash.com/photo-1651525670033-279c26cc2347?w=600&h=400&fit=crop&auto=format",
     status: "Completed",
-    temperature: "4°C",
-    details:
-      "Lots palletised in cold storage, export documents cleared and the consignment loaded into a refrigerated container at 4°C for sea freight.",
   },
   {
     id: 5,
@@ -109,12 +87,7 @@ export const JOURNEY: JourneyStage[] = [
     date: "10 Oct 2026",
     country: "GB",
     entities: [{ name: "UK Company ABC", detail: "London, United Kingdom" }],
-    image:
-      "https://images.unsplash.com/photo-1751779057940-43cc385452f7?w=600&h=400&fit=crop&auto=format",
     status: "Current",
-    temperature: "4°C",
-    details:
-      "Consignment shipped in a reefer container from Colombo Port to the customer in the United Kingdom, with temperature logged throughout the voyage.",
   },
 ];
 

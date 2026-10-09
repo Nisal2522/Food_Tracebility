@@ -1,9 +1,9 @@
 import { useEffect } from "react";
 import { motion, useReducedMotion } from "motion/react";
-import terraxLogo from "../../../assets/terrax-logo.png";
+import terraxLogo from "../../../assets/terrax-logo.webp";
 import { PRODUCT } from "../../data/traceability";
 
-const SPLASH_MS = 2600;
+const SPLASH_MS = 1400;
 const RING_RADIUS = 60;
 const RING_LENGTH = 2 * Math.PI * RING_RADIUS;
 
@@ -17,7 +17,7 @@ export function SplashScreen({ onComplete }: { onComplete: () => void }) {
   }, []);
 
   useEffect(() => {
-    const done = setTimeout(onComplete, reduceMotion ? 600 : SPLASH_MS);
+    const done = setTimeout(onComplete, reduceMotion ? 400 : SPLASH_MS);
     return () => clearTimeout(done);
   }, [onComplete, reduceMotion]);
 
@@ -36,7 +36,7 @@ export function SplashScreen({ onComplete }: { onComplete: () => void }) {
               className="absolute h-24 w-24 rounded-full bg-emerald-100"
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1.9, opacity: [0, 0.7, 0] }}
-              transition={{ duration: 2, repeat: Infinity, delay: 0.4 + i * 1, ease: "easeOut" }}
+              transition={{ duration: 1.4, repeat: Infinity, delay: 0.2 + i * 0.6, ease: "easeOut" }}
             />
           ))}
 
@@ -54,7 +54,7 @@ export function SplashScreen({ onComplete }: { onComplete: () => void }) {
             strokeDasharray={RING_LENGTH}
             initial={{ strokeDashoffset: RING_LENGTH }}
             animate={{ strokeDashoffset: 0 }}
-            transition={{ duration: (reduceMotion ? 600 : SPLASH_MS - 300) / 1000, ease: "easeInOut" }}
+            transition={{ duration: (reduceMotion ? 600 : SPLASH_MS - 150) / 1000, ease: "easeInOut" }}
           />
         </svg>
 
@@ -64,7 +64,7 @@ export function SplashScreen({ onComplete }: { onComplete: () => void }) {
           className="relative h-20 w-20 object-contain"
           initial={{ scale: 0.5, opacity: 0 }}
           animate={reduceMotion ? { scale: 1, opacity: 1 } : { scale: [0.5, 1.08, 1, 1.04, 1], opacity: 1 }}
-          transition={{ duration: 1.6, times: [0, 0.35, 0.55, 0.8, 1], ease: "easeOut" }}
+          transition={{ duration: 1, times: [0, 0.35, 0.55, 0.8, 1], ease: "easeOut" }}
         />
       </div>
     </div>

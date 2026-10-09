@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { motion } from "motion/react";
 import { FARMER_POINTS, FACILITY_POINT_IDS, ROUTE_NODES } from "../../data/traceability";
 import { cn } from "../ui/utils";
@@ -8,12 +8,16 @@ type MapView = "farmers" | "all";
 
 const FACILITIES = ROUTE_NODES.filter((node) => FACILITY_POINT_IDS.includes(node.id));
 const FARMER_PIN_COLOR = "#16a34a";
+const FARMER_PIN_W = 14;
+const FARMER_PIN_H = (FARMER_PIN_W * 32) / 24;
+const PIN_PATH = "M12 1C5.9 1 1 5.9 1 12c0 8.3 11 19 11 19s11-10.7 11-19C23 5.9 18.1 1 12 1z";
 
 // Same approach as the route map: a Google Maps embed with pins drawn over it by lat/lng
 export function LocationsMap({ className = "" }: { className?: string }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [size, setSize] = useState<{ width: number; height: number } | null>(null);
   const [view, setView] = useState<MapView>("farmers");
+  const pinSymbolId = `farmer-pin${useId().replace(/:/g, "")}`;
 
   useEffect(() => {
     const el = containerRef.current;
@@ -52,19 +56,30 @@ export function LocationsMap({ className = "" }: { className?: string }) {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, ease: "easeOut" }}
           >
-            {FARMER_POINTS.map((farmer) => {
-              const { dx, dy } = offsetFromCentre(farmer.lat, farmer.lng, camera);
-              return (
-                <Pin
-                  key={farmer.id}
-                  color={FARMER_PIN_COLOR}
-                  width={14}
-                  dx={dx}
-                  dy={dy}
-                  title={`Farmer ${farmer.id} · ${farmer.area}`}
-                />
-              );
-            })}
+            {/* All 500 farmer pins share one SVG and one pin shape — far cheaper on phones than 500 separate elements */}
+            <svg className="absolute left-0 top-0 h-px w-px overflow-visible" aria-hidden>
+              <defs>
+                <symbol id={pinSymbolId} viewBox="0 0 24 32">
+                  <path d={PIN_PATH} fill={FARMER_PIN_COLOR} stroke="#ffffff" strokeWidth={2} />
+                  <circle cx="12" cy="12" r="4" fill="#ffffff" />
+                </symbol>
+              </defs>
+              {FARMER_POINTS.map((farmer) => {
+                const { dx, dy } = offsetFromCentre(farmer.lat, farmer.lng, camera);
+                return (
+                  <use
+                    key={farmer.id}
+                    href={`#${pinSymbolId}`}
+                    x={dx - FARMER_PIN_W / 2}
+                    y={dy - FARMER_PIN_H}
+                    width={FARMER_PIN_W}
+                    height={FARMER_PIN_H}
+                  >
+                    <title>{`Farmer ${farmer.id} · ${farmer.area}`}</title>
+                  </use>
+                );
+              })}
+            </svg>
             {FACILITIES.map((facility) => {
               const { dx, dy } = offsetFromCentre(facility.lat, facility.lng, camera);
               return (
@@ -136,7 +151,7 @@ function Pin({
     >
       <svg viewBox="0 0 24 32" width={width} height={height} className="drop-shadow-[0_1px_1.5px_rgba(0,0,0,0.35)]">
         <path
-          d="M12 1C5.9 1 1 5.9 1 12c0 8.3 11 19 11 19s11-10.7 11-19C23 5.9 18.1 1 12 1z"
+          d={PIN_PATH}
           fill={color}
           stroke="#ffffff"
           strokeWidth={2}
