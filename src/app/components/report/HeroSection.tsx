@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useId, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { CheckCircle2, Calendar, Factory, Globe, ChevronDown, Hash, Droplets, Ship, Package, Anchor } from "lucide-react";
-import { PRODUCT } from "../../data/traceability";
+import { PRODUCT, COMPANY } from "../../data/traceability";
 import { useDeviceView } from "../../context/device-view";
 import { cn } from "../ui/utils";
 import { GlassCard } from "./shared";
@@ -28,48 +28,62 @@ export function HeroSection() {
   const [detailsExpanded, setDetailsExpanded] = useState(false);
   return (
     <section className="relative">
-      <div className="relative mx-4 mt-4 aspect-[4/5] overflow-hidden rounded-[28px] shadow-[0_20px_50px_rgba(16,64,32,0.18)] sm:mx-0 sm:mt-0 sm:aspect-auto sm:h-[62vh] sm:min-h-[420px] sm:rounded-t-none sm:rounded-b-[32px] sm:shadow-none">
-        {/* Wide screens: blurred copy fills the frame so the portrait photo can be shown whole */}
-        <img
-          src={PRODUCT.heroImage}
-          alt=""
-          aria-hidden
-          className="absolute inset-0 hidden h-full w-full scale-110 object-cover blur-2xl sm:block"
-        />
-        <motion.div
-          initial={{ opacity: 0, scale: 1.08 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }}
-          className="absolute inset-0 sm:bottom-20 sm:top-8"
-        >
-          <img
-            src={PRODUCT.heroImage}
-            alt={PRODUCT.endProduct}
-            decoding="async"
-            {...{ fetchpriority: "high" }}
-            className="h-full w-full object-cover object-[center_40%] sm:mx-auto sm:w-auto sm:rounded-3xl sm:shadow-[0_30px_60px_rgba(0,0,0,0.35)] sm:ring-4 sm:ring-white/40"
-          />
-        </motion.div>
-        <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/0 to-black/10" />
+      {/* Company banner */}
+      <div className="relative mx-4 mt-4 overflow-hidden rounded-[28px] bg-gradient-to-br from-emerald-600 via-emerald-700 to-green-900 text-white shadow-[0_20px_50px_rgba(16,64,32,0.18)] sm:mx-0 sm:mt-0 sm:rounded-t-none sm:rounded-b-[32px] sm:shadow-none">
+        <BannerPattern />
 
-        <motion.div
-          initial={{ opacity: 0, y: -12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.15, duration: 0.5 }}
-          className="absolute left-5 top-6 flex items-center gap-1.5 rounded-full border border-white/60 bg-white/90 px-3 py-1.5 shadow-sm backdrop-blur-md"
+        <div
+          className={cn(
+            "relative mx-auto w-full px-5 pb-24 pt-5",
+            view === "mobile" ? "max-w-2xl" : "max-w-7xl sm:px-10 sm:pb-28 sm:pt-8 lg:px-16"
+          )}
         >
-          <CheckCircle2 className="h-4 w-4 text-emerald-600" />
-          <span className="text-xs font-semibold text-emerald-700">Verified</span>
-        </motion.div>
+          <div className="flex items-center justify-between">
+            <motion.div
+              initial={{ opacity: 0, y: -12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.15, duration: 0.5 }}
+              className="flex items-center gap-1.5 rounded-full bg-white px-3 py-1.5 shadow-sm"
+            >
+              <CheckCircle2 className="h-4 w-4 text-emerald-600" />
+              <span className="text-xs font-semibold text-emerald-700">Verified</span>
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, y: -12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.15, duration: 0.5 }}
+              className="flex items-center rounded-full bg-white/15 p-1.5"
+            >
+              <SriLankaFlag className="h-4 w-6 rounded-[3px] shadow-sm" />
+            </motion.div>
+          </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: -12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.15, duration: 0.5 }}
-          className="absolute right-5 top-6 flex items-center rounded-full border border-white/30 bg-white/20 p-1.5 backdrop-blur-md"
-        >
-          <SriLankaFlag className="h-4 w-6 rounded-[3px] shadow-sm" />
-        </motion.div>
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+            className="mt-6 flex items-center gap-4"
+          >
+            <CompanyLogo />
+            <div className="min-w-0">
+              <h2
+                className="text-2xl font-bold leading-tight sm:text-3xl"
+                style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+              >
+                {COMPANY.name}
+              </h2>
+            </div>
+          </motion.div>
+
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.35, duration: 0.6 }}
+            className="mt-4 max-w-3xl text-[15px] leading-relaxed text-emerald-50/90"
+          >
+            {COMPANY.background}
+          </motion.p>
+        </div>
       </div>
 
       <motion.div
@@ -81,7 +95,7 @@ export function HeroSection() {
           view === "mobile" ? "max-w-2xl" : "max-w-7xl px-4 sm:px-10 lg:px-16"
         )}
       >
-        <GlassCard className="p-6">
+        <GlassCard className="bg-white p-6 sm:bg-white">
           <div className="flex flex-wrap items-center gap-2">
             <span className="rounded-full bg-gray-50 px-2.5 py-1 text-xs font-mono text-gray-500">
               {PRODUCT.batchNo}
@@ -159,5 +173,91 @@ function InfoTile({
       </div>
       <p className="mt-1 break-words text-sm font-semibold text-gray-900">{value}</p>
     </div>
+  );
+}
+
+// Company logo, or an initials badge until a logo image is provided
+function CompanyLogo() {
+  // Use a short all-caps first word (e.g. "ABC") as-is, otherwise the first letters of each word
+  const words = COMPANY.name.replace(/\(.*?\)/g, "").split(/\s+/).filter(Boolean);
+  const initials = /^[A-Z0-9]{2,4}$/.test(words[0] ?? "")
+    ? words[0]
+    : words
+        .map((word) => word[0])
+        .join("")
+        .slice(0, 3)
+        .toUpperCase();
+
+  return (
+    <div className="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-white shadow-lg ring-4 ring-white/20 sm:h-24 sm:w-24">
+      {COMPANY.logo ? (
+        <img src={COMPANY.logo} alt={`${COMPANY.name} logo`} className="h-full w-full object-contain p-1" />
+      ) : (
+        <span
+          className="bg-gradient-to-br from-emerald-600 to-green-800 bg-clip-text text-xl font-extrabold tracking-tight text-transparent sm:text-2xl"
+          style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+          aria-label={`${COMPANY.name} logo`}
+        >
+          {initials}
+        </span>
+      )}
+    </div>
+  );
+}
+
+// Decorative banner background: fading dot grid, topographic contour rings and a faint palm frond
+function BannerPattern() {
+  const uid = useId().replace(/:/g, "");
+  const leaflets = Array.from({ length: 13 }, (_, k) => {
+    const y = -(k + 1) * 24;
+    const len = 96 - k * 5;
+    return (
+      <g key={k}>
+        <path d={`M0 ${y} q ${-len * 0.5} ${-len * 0.12} ${-len} ${len * 0.32}`} />
+        <path d={`M0 ${y} q ${len * 0.5} ${-len * 0.12} ${len} ${len * 0.32}`} />
+      </g>
+    );
+  });
+
+  return (
+    <svg
+      aria-hidden
+      className="pointer-events-none absolute inset-0 h-full w-full"
+      viewBox="0 0 1200 420"
+      preserveAspectRatio="xMaxYMid slice"
+    >
+      <defs>
+        <pattern id={`${uid}-dots`} width="22" height="22" patternUnits="userSpaceOnUse">
+          <circle cx="2" cy="2" r="1.3" fill="#ffffff" fillOpacity="0.16" />
+        </pattern>
+        <radialGradient id={`${uid}-fade`} cx="0" cy="0" r="0.75">
+          <stop offset="0" stopColor="#ffffff" />
+          <stop offset="1" stopColor="#ffffff" stopOpacity="0" />
+        </radialGradient>
+        <mask id={`${uid}-mask`}>
+          <rect width="1200" height="420" fill={`url(#${uid}-fade)`} />
+        </mask>
+      </defs>
+
+      <rect width="1200" height="420" fill={`url(#${uid}-dots)`} mask={`url(#${uid}-mask)`} />
+
+      <g fill="none" stroke="#ffffff" strokeOpacity="0.09" strokeWidth="1.5" transform="translate(1050 70) rotate(-18)">
+        {Array.from({ length: 9 }, (_, i) => (
+          <ellipse key={i} rx={60 + i * 44} ry={36 + i * 31} />
+        ))}
+      </g>
+
+      <g
+        fill="none"
+        stroke="#d9f99d"
+        strokeOpacity="0.14"
+        strokeWidth="2"
+        strokeLinecap="round"
+        transform="translate(1010 470) rotate(-32)"
+      >
+        <path d="M0 0 L0 -330" />
+        {leaflets}
+      </g>
+    </svg>
   );
 }

@@ -16,10 +16,10 @@ export function ReportPage() {
       <OrganicBackdrop />
 
       <HeroSection />
+      <CertificationsSection />
       <JourneyTimelineSection />
       <RouteMapSection />
       <OriginSummarySection />
-      <CertificationsSection />
 
       <ReportFooter />
 

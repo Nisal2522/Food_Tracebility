@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import terraxLogo from "../../../assets/terrax-logo.webp";
-import { PRODUCT } from "../../data/traceability";
 
 const SPLASH_MS = 1400;
 const RING_RADIUS = 60;
@@ -9,12 +8,6 @@ const RING_LENGTH = 2 * Math.PI * RING_RADIUS;
 
 export function SplashScreen({ onComplete }: { onComplete: () => void }) {
   const reduceMotion = useReducedMotion();
-
-  // Warm the hero image so the report appears fully painted when the splash exits
-  useEffect(() => {
-    const img = new Image();
-    img.src = PRODUCT.heroImage;
-  }, []);
 
   useEffect(() => {
     const done = setTimeout(onComplete, reduceMotion ? 400 : SPLASH_MS);

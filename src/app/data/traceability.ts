@@ -1,7 +1,7 @@
+import companyLogo from "../../assets/company-logo.webp";
+
 // Realistic sample data for a single scanned product — Organic King Coconut Water
 // from 500 farmers in Sri Lanka, exported to a customer in the United Kingdom.
-
-import productImage from "../../assets/king-coconut-water.webp";
 
 export const PRODUCT = {
   endProduct: "Organic King Coconut Water",
@@ -14,7 +14,14 @@ export const PRODUCT = {
   consignmentNumber: "CMB-LDN-2026-0471",
   countryOfLoading: "SRI LANKA",
   countryOfOrigin: "SRI LANKA",
-  heroImage: productImage,
+};
+
+// Company shown at the top of the report. Set `logo` to an imported image to replace the initials badge.
+export const COMPANY: { name: string; logo?: string; background: string } = {
+  name: "Ceylon Thambili Exports (Pvt) Ltd",
+  logo: companyLogo,
+  background:
+    "Ceylon Thambili Exports (Pvt) Ltd is a Sri Lankan agri-business that sources organic king coconuts from a network of 500 smallholder farmers across the Kurunegala coconut belt. The company processes and bottles king coconut water at its Colombo and Hambantota facilities for export markets, including the United Kingdom.",
 };
 
 export type CountryCode = "LK" | "GB";
@@ -22,16 +29,16 @@ export type CountryCode = "LK" | "GB";
 export type JourneyEntity = {
   name: string;
   detail: string;
+  // Defaults to the stage's country when not set
+  country?: CountryCode;
 };
 
 export type JourneyStage = {
   id: number;
   icon: string;
   label: string;
-  date: string;
   country: CountryCode;
   entities: JourneyEntity[];
-  status: "Completed" | "Current";
 };
 
 export const JOURNEY: JourneyStage[] = [
@@ -39,55 +46,45 @@ export const JOURNEY: JourneyStage[] = [
     id: 1,
     icon: "🌴",
     label: "Harvested",
-    date: "7–8 Oct 2026",
     country: "LK",
     entities: [
       { name: "500 Farmers", detail: "Smallholders, Kurunegala coconut belt" },
-      { name: "ABC (Pvt) Ltd", detail: "Farmer network, Kurunegala" },
+      { name: "Ceylon Thambili Exports (Pvt) Ltd", detail: "Farmer network, Kurunegala" },
     ],
-    status: "Completed",
   },
   {
     id: 2,
     icon: "🧺",
     label: "Collected by Buyer",
-    date: "8 Oct 2026",
     country: "LK",
-    entities: [{ name: "ABC (Pvt) Ltd Collection Centre", detail: "Kurunegala" }],
-    status: "Completed",
+    entities: [{ name: "Ceylon Thambili Collection Centre", detail: "Kurunegala" }],
   },
   {
     id: 3,
     icon: "🏭",
     label: "Processed",
-    date: "8–9 Oct 2026",
     country: "LK",
     entities: [
       { name: "Colombo Factory", detail: "Ja-Ela, Colombo" },
       { name: "Hambantota Factory", detail: "Hambantota" },
     ],
-    status: "Completed",
   },
   {
     id: 4,
     icon: "📦",
     label: "Exported from Sri Lanka",
-    date: "10 Oct 2026",
     country: "LK",
     entities: [
       { name: "Colombo WH", detail: "Colombo Port" },
       { name: "Kandy WH", detail: "Kandy" },
     ],
-    status: "Completed",
   },
   {
     id: 5,
     icon: "🚢",
     label: "Dispatched to Customer",
-    date: "10 Oct 2026",
     country: "GB",
     entities: [{ name: "UK Company ABC", detail: "London, United Kingdom" }],
-    status: "Current",
   },
 ];
 
@@ -110,23 +107,6 @@ export const ROUTE_NODES: RouteNode[] = [
   { id: "colombo-wh", label: "Colombo WH", icon: "📦", city: "Colombo Port", lat: 6.9497, lng: 79.8428, color: "#8b5cf6" },
   { id: "kandy-wh", label: "Kandy WH", icon: "📦", city: "Kandy", lat: 7.2906, lng: 80.6337, color: "#8b5cf6" },
 ];
-
-export const ROUTE_EDGES: { from: string; to: string }[] = [
-  { from: "farms", to: "collection" },
-  { from: "collection", to: "colombo-factory" },
-  { from: "collection", to: "hambantota-factory" },
-  { from: "colombo-factory", to: "colombo-wh" },
-  { from: "hambantota-factory", to: "kandy-wh" },
-];
-
-// The overview map is centred here at this zoom so markers can be projected onto it
-export const ROUTE_MAP_VIEW = { lat: 6.9, lng: 80.48, zoom: 8 };
-
-export const ROUTE_OVERVIEW_MAP_EMBED_URL = `https://maps.google.com/maps?ll=${ROUTE_MAP_VIEW.lat},${ROUTE_MAP_VIEW.lng}&z=${ROUTE_MAP_VIEW.zoom}&output=embed`;
-
-export const CUSTOMER = {
-  country: "United Kingdom",
-};
 
 export type SourceLot = {
   lotId: string;
@@ -162,8 +142,6 @@ export const ORIGIN_AREAS: OriginArea[] = [
 
 export const ORIGIN_SUMMARY = {
   region: "Kurunegala District",
-  province: "North Western Province, Sri Lanka",
-  variety: "King Coconut (Cocos nucifera var. aurantiaca)",
   farmers: ORIGIN_AREAS.reduce((sum, a) => sum + a.farmers, 0),
   plots: ORIGIN_AREAS.reduce((sum, a) => sum + a.plots, 0),
   totalAreaHa: ORIGIN_AREAS.reduce((sum, a) => sum + a.areaHa, 0),
@@ -254,7 +232,7 @@ export const PARTICIPANTS: Participant[] = [
   {
     role: "Farmers",
     icon: "🌴",
-    name: "ABC (Pvt) Ltd",
+    name: "Ceylon Thambili Exports (Pvt) Ltd",
     subtitle: "500 registered farmers",
     location: "Kurunegala, Sri Lanka",
     certification: "Organic Group Certified",
@@ -263,7 +241,7 @@ export const PARTICIPANTS: Participant[] = [
   {
     role: "Collector",
     icon: "🧺",
-    name: "ABC (Pvt) Ltd Collection Centre",
+    name: "Ceylon Thambili Collection Centre",
     subtitle: "Buyer collection point",
     location: "Kurunegala, Sri Lanka",
     certification: "GlobalG.A.P. Registered",

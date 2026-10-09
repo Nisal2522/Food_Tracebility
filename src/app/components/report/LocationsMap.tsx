@@ -1,22 +1,37 @@
 import { useEffect, useId, useMemo, useRef, useState } from "react";
-import { motion } from "motion/react";
-import { FARMER_POINTS, FACILITY_POINT_IDS, ROUTE_NODES } from "../../data/traceability";
+import { motion, AnimatePresence } from "motion/react";
+import { X, MapPin } from "lucide-react";
+import { FARMER_POINTS, FACILITY_POINT_IDS, ROUTE_NODES, ORIGIN_SUMMARY } from "../../data/traceability";
 import { cn } from "../ui/utils";
 import { embedUrl, fitCamera, offsetFromCentre } from "./mapProjection";
+import { CountryFlag } from "./CountryFlag";
 
 type MapView = "farmers" | "all";
 
+type Selection = {
+  id: string;
+  title: string;
+  lines: string[];
+  lat: number;
+  lng: number;
+  color: string;
+};
+
 const FACILITIES = ROUTE_NODES.filter((node) => FACILITY_POINT_IDS.includes(node.id));
 const FARMER_PIN_COLOR = "#16a34a";
-const FARMER_PIN_W = 14;
-const FARMER_PIN_H = (FARMER_PIN_W * 32) / 24;
+const FARMER_PIN_W = 16;
 const PIN_PATH = "M12 1C5.9 1 1 5.9 1 12c0 8.3 11 19 11 19s11-10.7 11-19C23 5.9 18.1 1 12 1z";
+const CARD_W = 220;
 
-// Same approach as the route map: a Google Maps embed with pins drawn over it by lat/lng
+const formatCoords = (lat: number, lng: number) => `${lat.toFixed(4)}° N, ${lng.toFixed(4)}° E`;
+
+// Same approach as the route map: a Google Maps embed with pins drawn over it by lat/lng.
+// Pins open an info card on tap, since hover tooltips don't exist on phones.
 export function LocationsMap({ className = "" }: { className?: string }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [size, setSize] = useState<{ width: number; height: number } | null>(null);
   const [view, setView] = useState<MapView>("farmers");
+  const [selected, setSelected] = useState<Selection | null>(null);
   const pinSymbolId = `farmer-pin${useId().replace(/:/g, "")}`;
 
   useEffect(() => {
@@ -36,9 +51,50 @@ export function LocationsMap({ className = "" }: { className?: string }) {
     return fitCamera(points, size.width, size.height);
   }, [size, view]);
 
+  // Screen position of a lat/lng inside the container
+  const toScreen = (lat: number, lng: number) => {
+    if (!camera || !size) return { x: 0, y: 0 };
+    const { dx, dy } = offsetFromCentre(lat, lng, camera);
+    return { x: size.width / 2 + dx, y: size.height / 2 + dy };
+  };
+
+  const changeView = (next: MapView) => {
+    setSelected(null);
+    setView(next);
+  };
+
+  const selectFarmer = (farmer: (typeof FARMER_POINTS)[number]) =>
+    setSelected({
+      id: farmer.id,
+      title: `Farmer ${farmer.id}`,
+      lines: [`${farmer.area} · ${ORIGIN_SUMMARY.region}`, formatCoords(farmer.lat, farmer.lng)],
+      lat: farmer.lat,
+      lng: farmer.lng,
+      color: FARMER_PIN_COLOR,
+    });
+
+  const selectFacility = (facility: (typeof FACILITIES)[number]) =>
+    setSelected({
+      id: facility.id,
+      title: facility.label,
+      lines: [
+        `${facility.id.endsWith("wh") ? "Export warehouse" : "Processing factory"} · ${facility.city}`,
+        formatCoords(facility.lat, facility.lng),
+      ],
+      lat: facility.lat,
+      lng: facility.lng,
+      color: facility.color,
+    });
+
+  const selectedPos = selected ? toScreen(selected.lat, selected.lng) : null;
+
   return (
-    <div ref={containerRef} className={cn("relative overflow-hidden bg-gray-100", className)}>
-      {camera && (
+    <div
+      ref={containerRef}
+      className={cn("relative overflow-hidden bg-gray-100", className)}
+      onClick={() => setSelected(null)}
+    >
+      {camera && size && (
         <>
           <iframe
             key={embedUrl(camera)}
@@ -51,13 +107,13 @@ export function LocationsMap({ className = "" }: { className?: string }) {
 
           <motion.div
             key={`${view}-${camera.zoom}`}
-            className="absolute left-1/2 top-1/2 h-0 w-0"
+            className="absolute inset-0"
             initial={{ opacity: 0, y: -8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, ease: "easeOut" }}
           >
             {/* All 500 farmer pins share one SVG and one pin shape — far cheaper on phones than 500 separate elements */}
-            <svg className="absolute left-0 top-0 h-px w-px overflow-visible" aria-hidden>
+            <svg className="absolute inset-0 h-full w-full" aria-label="Farmer locations">
               <defs>
                 <symbol id={pinSymbolId} viewBox="0 0 24 32">
                   <path d={PIN_PATH} fill={FARMER_PIN_COLOR} stroke="#ffffff" strokeWidth={2} />
@@ -65,41 +121,93 @@ export function LocationsMap({ className = "" }: { className?: string }) {
                 </symbol>
               </defs>
               {FARMER_POINTS.map((farmer) => {
-                const { dx, dy } = offsetFromCentre(farmer.lat, farmer.lng, camera);
+                const { x, y } = toScreen(farmer.lat, farmer.lng);
+                const isSelected = selected?.id === farmer.id;
+                const w = isSelected ? FARMER_PIN_W * 1.8 : FARMER_PIN_W;
+                const h = (w * 32) / 24;
                 return (
                   <use
                     key={farmer.id}
                     href={`#${pinSymbolId}`}
-                    x={dx - FARMER_PIN_W / 2}
-                    y={dy - FARMER_PIN_H}
-                    width={FARMER_PIN_W}
-                    height={FARMER_PIN_H}
+                    x={x - w / 2}
+                    y={y - h}
+                    width={w}
+                    height={h}
+                    className="cursor-pointer"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      selectFarmer(farmer);
+                    }}
                   >
                     <title>{`Farmer ${farmer.id} · ${farmer.area}`}</title>
                   </use>
                 );
               })}
             </svg>
+
             {FACILITIES.map((facility) => {
-              const { dx, dy } = offsetFromCentre(facility.lat, facility.lng, camera);
+              const { x, y } = toScreen(facility.lat, facility.lng);
+              const isSelected = selected?.id === facility.id;
               return (
-                <Pin
+                <button
                   key={facility.id}
-                  color={facility.color}
-                  width={30}
-                  dx={dx}
-                  dy={dy}
-                  title={`${facility.label} · ${facility.city}`}
-                  glyph={facility.icon}
-                  raised
-                />
+                  type="button"
+                  aria-label={`${facility.label}, ${facility.city}`}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    selectFacility(facility);
+                  }}
+                  className={cn(
+                    "absolute z-10 -translate-x-1/2 -translate-y-full transition-transform",
+                    isSelected && "scale-125"
+                  )}
+                  style={{ left: x, top: y }}
+                >
+                  <Pin color={facility.color} width={30} glyph={facility.icon} />
+                </button>
               );
             })}
           </motion.div>
         </>
       )}
 
-      <div className="absolute right-2 top-2 z-10 flex rounded-full bg-white/95 p-1 shadow-md">
+      <AnimatePresence>
+        {selected && selectedPos && size && (
+          <motion.div
+            key={selected.id}
+            initial={{ opacity: 0, y: 6, scale: 0.96 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 6, scale: 0.96 }}
+            transition={{ duration: 0.18 }}
+            onClick={(e) => e.stopPropagation()}
+            className="absolute z-20 rounded-2xl border border-gray-100 bg-white p-3 shadow-xl"
+            style={cardPosition(selectedPos, size)}
+          >
+            <div className="flex items-start justify-between gap-2">
+              <p className="flex items-center gap-1.5 text-sm font-bold text-gray-900">
+                <MapPin className="h-4 w-4 shrink-0" style={{ color: selected.color }} />
+                {selected.title}
+                <CountryFlag country="LK" className="h-3 w-[18px] shrink-0 rounded-[2px] shadow-sm" />
+              </p>
+              <button
+                type="button"
+                onClick={() => setSelected(null)}
+                aria-label="Close"
+                className="-m-1 rounded-full p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+            {selected.lines.map((line) => (
+              <p key={line} className="mt-1 text-[13px] leading-snug text-gray-600">
+                {line}
+              </p>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <div className="absolute right-2 top-2 z-30 flex rounded-full bg-white/95 p-1 shadow-md" onClick={(e) => e.stopPropagation()}>
         {(
           [
             ["farmers", "Farmers"],
@@ -109,7 +217,7 @@ export function LocationsMap({ className = "" }: { className?: string }) {
           <button
             key={key}
             type="button"
-            onClick={() => setView(key)}
+            onClick={() => changeView(key)}
             aria-pressed={view === key}
             className={cn(
               "rounded-full px-3 py-1.5 text-xs font-semibold transition-colors",
@@ -124,38 +232,23 @@ export function LocationsMap({ className = "" }: { className?: string }) {
   );
 }
 
-// Classic map-pin with its tip anchored on the location
-function Pin({
-  color,
-  width,
-  dx,
-  dy,
-  title,
-  glyph,
-  raised = false,
-}: {
-  color: string;
-  width: number;
-  dx: number;
-  dy: number;
-  title: string;
-  glyph?: string;
-  raised?: boolean;
-}) {
+// Places the info card above the pin, flipping below it near the top edge and clamping to the sides
+function cardPosition(pos: { x: number; y: number }, size: { width: number; height: number }) {
+  const width = Math.min(CARD_W, size.width - 16);
+  const left = Math.min(Math.max(pos.x - width / 2, 8), size.width - width - 8);
+  const placeAbove = pos.y > 120;
+  return placeAbove
+    ? { width, left, bottom: size.height - pos.y + 32 }
+    : { width, left, top: pos.y + 8 };
+}
+
+// Classic map-pin with an optional emoji glyph, used for the facility markers
+function Pin({ color, width, glyph }: { color: string; width: number; glyph?: string }) {
   const height = (width * 32) / 24;
   return (
-    <div
-      className={cn("absolute -translate-x-1/2 -translate-y-full", raised && "z-10")}
-      style={{ left: dx, top: dy, width, height }}
-      title={title}
-    >
+    <div className="relative" style={{ width, height }}>
       <svg viewBox="0 0 24 32" width={width} height={height} className="drop-shadow-[0_1px_1.5px_rgba(0,0,0,0.35)]">
-        <path
-          d={PIN_PATH}
-          fill={color}
-          stroke="#ffffff"
-          strokeWidth={2}
-        />
+        <path d={PIN_PATH} fill={color} stroke="#ffffff" strokeWidth={2} />
         {!glyph && <circle cx="12" cy="12" r="4" fill="#ffffff" />}
       </svg>
       {glyph && (
