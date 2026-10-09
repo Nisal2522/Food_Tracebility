@@ -12,7 +12,7 @@ import { OrganicBackdrop } from "./shared";
 export function ReportPage() {
   const { view } = useDeviceView();
   return (
-    <div className={cn("relative flex flex-col gap-3 bg-[#f8faf8]", view === "mobile" ? "min-h-full" : "min-h-screen")}>
+    <div className={cn("relative flex flex-col gap-8 bg-[#f8faf8]", view === "mobile" ? "min-h-full" : "min-h-screen")}>
       <OrganicBackdrop />
 
       <HeroSection />
